@@ -61,3 +61,25 @@ def test_benchmark_parse_on_subset(tmp_path, capsys):
 
 def test_benchmark_parse_missing_dir_exit_2(tmp_path):
     assert main(["benchmark", "parse", "--data", str(tmp_path / "nope")]) == 2
+
+
+def test_benchmark_detect_on_paired(capsys):
+    """mrqc benchmark detect：配对集端到端检出，M4 门槛（误报 0 + 检出率 ≥0.95）。"""
+    rc = main(["benchmark", "detect", "--data", str(REPO_ROOT / "data" / "paired")])
+    assert rc == 0
+    out = capsys.readouterr().out
+    r = json.loads(out[out.index("{"):])
+    assert r["detection_rate"] >= 0.95
+    assert r["clean_false_positives"] == 0
+    assert r["unexpected_findings"] == 0
+
+
+def test_benchmark_detect_gate_fails_on_impossible_threshold(capsys):
+    rc = main(["benchmark", "detect", "--data", str(REPO_ROOT / "data" / "paired"),
+               "--min-detection-rate", "1.1"])
+    assert rc == 1
+    assert "未达标" in capsys.readouterr().err
+
+
+def test_benchmark_detect_missing_dir_exit_2(tmp_path):
+    assert main(["benchmark", "detect", "--data", str(tmp_path / "nope")]) == 2

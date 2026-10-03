@@ -69,7 +69,8 @@ def _cmd_demo(args: argparse.Namespace) -> int:
     ks = knowledge_status()
     print("  [ok] 知识库三层：raw=%d 份 / blocks=%d 块 / rules=%d 条（7 类 check_type 全注册）"
           % (ks["raw"], ks["blocks"], ks["rules"]))
-    print("  [--] LLM 兜底：%s（M4；未配置时自动走纯规则通路）" % ("已配置" if llm_available() else "未配置"))
+    print("  [ok] LLM 兜底（低置信字段补抽 + 防幻觉回验）：%s"
+          % ("已配置" if llm_available() else "未配置（自动走纯规则通路）"))
     print("  [--] 报告导出 / Web 面板：M5")
     print()
     print("演示运行：解析 → 质控（%d 条规则 → %d 条结论），流水线节点耗时："
@@ -96,6 +97,27 @@ def _cmd_parse(args: argparse.Namespace) -> int:
     return 0
 
 
+def _run_llm_fallback(card, part_texts) -> None:
+    """M4 LLM 兜底：低置信字段补抽。未配置静默走纯规则通路；失败降级不阻塞。"""
+    from .llm import apply_fallback
+
+    try:
+        stats = apply_fallback(card, part_texts)
+    except Exception as exc:  # noqa: BLE001 —— 兜底层任何意外都不得阻塞质控主流程
+        print("[LLM兜底] 意外失败已降级纯规则通路：%s" % exc, file=sys.stderr)
+        return
+    if not stats.get("available"):
+        return  # 未配置：静默（demo 已展示配置状态）
+    if stats.get("reason"):
+        print("[LLM兜底] %s" % stats["reason"], file=sys.stderr)
+        return
+    if not stats.get("n_low_conf"):
+        return  # 无低置信字段：无事可报
+    print("[LLM兜底] 低置信字段 %d 个：应用 %d（丢弃：quote 非逐字 %d / 数值或时间非法 %d / 其他 %d）"
+          % (stats["n_low_conf"], stats["n_applied"], stats["n_dropped_quote"],
+             stats["n_dropped_range"], stats["n_dropped_other"]), file=sys.stderr)
+
+
 def _cmd_check(args: argparse.Namespace) -> int:
     from .knowledge import knowledge_dir
     from .parsers import load_part_texts, parse_texts
@@ -104,6 +126,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
     part_texts, warnings = load_part_texts(Path(args.input))
     card = parse_texts(part_texts)
     card.parse_warnings[:0] = warnings  # 目录级告警排前（与 parse_record_dir 同口径）
+    _run_llm_fallback(card, part_texts)  # M4：低置信字段补抽（未配置自动跳过）
     engine = RuleEngine.load(knowledge_dir() / "rules")
     findings = engine.check(card, part_texts=part_texts)
     print(json.dumps([f.to_dict() for f in findings], ensure_ascii=False, indent=2))
@@ -125,21 +148,43 @@ def _cmd_run(args: argparse.Namespace) -> int:
 
 
 def _cmd_benchmark(args: argparse.Namespace) -> int:
-    if getattr(args, "bench", "") != "parse":
-        return _not_implemented(
-            "端到端检出基准在 M4 实现；解析 F1 基准：mrqc benchmark parse（或 benchmarks/parse_f1.py）"
-        )
-    from .eval.parse_f1 import evaluate_dataset
+    bench = getattr(args, "bench", "")
+    data_dir = Path(args.data) if args.data else None
+    if bench == "parse":
+        from .eval.parse_f1 import evaluate_dataset
 
-    data_dir = Path(args.data)
-    if not data_dir.is_dir():
-        print("[错误] 数据集目录不存在：%s" % data_dir, file=sys.stderr)
-        return 2
-    r = evaluate_dataset(data_dir)
-    print(json.dumps(r, ensure_ascii=False, indent=2))
-    if r["records_with_evidence_violations"]:
-        return 1
-    return 0
+        data_dir = data_dir or Path("data/samples")
+        if not data_dir.is_dir():
+            print("[错误] 数据集目录不存在：%s" % data_dir, file=sys.stderr)
+            return 2
+        r = evaluate_dataset(data_dir)
+        print(json.dumps(r, ensure_ascii=False, indent=2))
+        if r["records_with_evidence_violations"]:
+            return 1
+        if r["f1"] < args.min_f1:
+            print("[未达标] F1 %.4f < 门槛 %.4f" % (r["f1"], args.min_f1), file=sys.stderr)
+            return 1
+        return 0
+    if bench == "detect":
+        from .eval.detect import evaluate_dataset
+
+        data_dir = data_dir or Path("data/paired")
+        if not data_dir.is_dir():
+            print("[错误] 数据集目录不存在：%s" % data_dir, file=sys.stderr)
+            return 2
+        r = evaluate_dataset(data_dir)
+        print(json.dumps({k: v for k, v in r.items() if k != "details"},
+                         ensure_ascii=False, indent=2))
+        failed = (r["clean_false_positives"] > 0 or r["unexpected_findings"] > 0
+                  or r["detection_rate"] < args.min_detection_rate)
+        if failed:
+            print("[未达标] 门槛：干净误报 0 + 非预期结论 0 + 检出率 ≥ %.2f" % args.min_detection_rate,
+                  file=sys.stderr)
+            return 1
+        return 0
+    return _not_implemented(
+        "基准名可选 parse（解析 F1）/ detect（端到端检出，M4 已实现）；空名无默认基准"
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -166,10 +211,14 @@ def build_parser() -> argparse.ArgumentParser:
     p_run.add_argument("--report", default="", help="输出 docx 报告路径（M5）")
     p_run.set_defaults(fn=_cmd_run)
 
-    p_bench = sub.add_parser("benchmark", help="内置评测基准（解析 F1：benchmark parse）")
-    p_bench.add_argument("bench", nargs="?", default="", choices=["", "parse"],
-                         help="基准名；parse = 解析 F1（字段路径级，对 data/samples ↔ truth.json）")
-    p_bench.add_argument("--data", default="data/samples", help="病历数据集目录（默认 data/samples）")
+    p_bench = sub.add_parser("benchmark", help="内置评测基准（parse = 解析 F1；detect = 端到端检出）")
+    p_bench.add_argument("bench", nargs="?", default="", choices=["", "parse", "detect"],
+                         help="基准名；parse = 解析 F1（对 data/samples ↔ truth.json），"
+                              "detect = 端到端检出（对 data/paired ↔ defects.json）")
+    p_bench.add_argument("--data", default="", help="病历数据集目录（默认：parse→data/samples，detect→data/paired）")
+    p_bench.add_argument("--min-f1", type=float, default=0.95, help="parse 基准 F1 门槛（默认 0.95，低于则退出码 1）")
+    p_bench.add_argument("--min-detection-rate", type=float, default=0.95,
+                         help="detect 基准主缺陷检出率门槛（默认 0.95，另含误报 0 硬门槛）")
     p_bench.set_defaults(fn=_cmd_benchmark)
     return parser
 

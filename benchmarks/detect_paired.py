@@ -1,9 +1,11 @@
-"""配对集端到端检出基准运行器（M3 首版出数；M4 在此扩正式门槛）。
+"""配对集端到端检出基准运行器（M3 出数；M4 定正式门槛并默认启用）。
 
 指标实现与口径：src/mrqc/eval/detect.py（与 parse_f1 同分层：实现入库、
 本文件只做 CLI 壳）。对账口径摘要：
 - 缺陷记录主缺陷必须非 pass；also_expect 可选；期望外非 pass = 误报；
-- 干净对照任何非 pass = 误报（M4 门槛 0，首版先行看数）。
+- 干净对照任何非 pass = 误报；
+- M4 正式门槛（默认启用）：干净误报 0 + 非预期结论 0 + 主缺陷检出率 ≥0.95，
+  未达标退出码 1（--min-detection-rate 可调，误报 0 为硬门槛不可放宽）。
 
 运行：PYTHONDONTWRITEBYTECODE=1 py -X utf8 benchmarks/detect_paired.py \
         [--data data/paired] [--out 报告.md] [--min-detection-rate 0.95]
@@ -21,11 +23,11 @@ from mrqc.eval.detect import evaluate_dataset, render_markdown  # noqa: E402
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description="配对集端到端检出基准（M3 首版）")
+    ap = argparse.ArgumentParser(description="配对集端到端检出基准（M4 门槛模式）")
     ap.add_argument("--data", default=str(ROOT / "data" / "paired"))
     ap.add_argument("--out", default="", help="追加写出 markdown 报告路径（可选）")
-    ap.add_argument("--min-detection-rate", type=float, default=0.0,
-                    help="门槛模式：主缺陷检出率低于该值退出码 1（M4 接管）")
+    ap.add_argument("--min-detection-rate", type=float, default=0.95,
+                    help="主缺陷检出率门槛（默认 0.95，M4 定稿；干净误报 0 为硬门槛）")
     args = ap.parse_args(argv)
 
     data_dir = Path(args.data)
