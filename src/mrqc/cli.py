@@ -64,7 +64,7 @@ def _cmd_demo(args: argparse.Namespace) -> int:
     print("  [ok] 病历参数卡 schema（统一中间表示，M0 契约）")
     print("  [ok] 规则引擎骨架（type 分派 + only_if 门控；无依据规则拒绝加载）")
     print("  [ok] 流水线编排（节点注册/耗时记录/失败即停）")
-    print("  [--] 解析器注册表：当前已注册 %d 个部件解析器（M2）" % len(registered_parts()))
+    print("  [ok] 解析器注册表：已注册 %d 个部件解析器（规则优先，证据逐字摘录）" % len(registered_parts()))
     ks = knowledge_status()
     print("  [--] 知识库三层：raw=%d 份 / blocks=%d 块 / rules=%d 条（M1/M3）" % (ks["raw"], ks["blocks"], ks["rules"]))
     print("  [--] LLM 兜底：%s（M4；未配置时自动走纯规则通路）" % ("已配置" if llm_available() else "未配置"))
@@ -114,9 +114,21 @@ def _cmd_run(args: argparse.Namespace) -> int:
 
 
 def _cmd_benchmark(args: argparse.Namespace) -> int:
-    return _not_implemented(
-        "内置基准在 M2（解析 F1）/ M4（端到端检出）实现，脚本位于 benchmarks/"
-    )
+    if getattr(args, "bench", "") != "parse":
+        return _not_implemented(
+            "端到端检出基准在 M4 实现；解析 F1 基准：mrqc benchmark parse（或 benchmarks/parse_f1.py）"
+        )
+    from .eval.parse_f1 import evaluate_dataset
+
+    data_dir = Path(args.data)
+    if not data_dir.is_dir():
+        print("[错误] 数据集目录不存在：%s" % data_dir, file=sys.stderr)
+        return 2
+    r = evaluate_dataset(data_dir)
+    print(json.dumps(r, ensure_ascii=False, indent=2))
+    if r["records_with_evidence_violations"]:
+        return 1
+    return 0
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -143,7 +155,10 @@ def build_parser() -> argparse.ArgumentParser:
     p_run.add_argument("--report", default="", help="输出 docx 报告路径（M5）")
     p_run.set_defaults(fn=_cmd_run)
 
-    p_bench = sub.add_parser("benchmark", help="内置评测基准（解析 F1 / 端到端检出）")
+    p_bench = sub.add_parser("benchmark", help="内置评测基准（解析 F1：benchmark parse）")
+    p_bench.add_argument("bench", nargs="?", default="", choices=["", "parse"],
+                         help="基准名；parse = 解析 F1（字段路径级，对 data/samples ↔ truth.json）")
+    p_bench.add_argument("--data", default="data/samples", help="病历数据集目录（默认 data/samples）")
     p_bench.set_defaults(fn=_cmd_benchmark)
     return parser
 
