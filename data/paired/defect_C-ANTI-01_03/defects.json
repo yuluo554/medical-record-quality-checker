@@ -1,0 +1,23 @@
+{
+  "record_id": "defect_C-ANTI-01_03",
+  "template_id": "gallstone",
+  "clean_pair": false,
+  "seed": 20261004,
+  "defects": [
+    {
+      "defect_id": "C-ANTI-01",
+      "rule_id": "C-ANTI-01",
+      "channel": "integrity",
+      "check_type": "medication_logic",
+      "description": "特殊使用级抗菌药无审批记录（加特殊级抗菌药医嘱）",
+      "expect_status": "fail",
+      "also_expect": [],
+      "params": {
+        "drug": "注射用亚胺培南西司他丁钠",
+        "antibiotic_level": "特殊使用级",
+        "approval_record": "无"
+      }
+    }
+  ],
+  "notes": "评测按文档全部非 pass 集合对账；defect_id 与 M3 规则、M4 基准三方共用（plan/04 §7），不得单方改名。defects 仅主注入；同一注入隐含的其余结论记 also_expect。"
+}

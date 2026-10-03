@@ -1,0 +1,23 @@
+{
+  "record_id": "defect_C-LAB-01_01",
+  "template_id": "cap",
+  "clean_pair": false,
+  "seed": 20261004,
+  "defects": [
+    {
+      "defect_id": "C-LAB-01",
+      "rule_id": "C-LAB-01",
+      "channel": "integrity",
+      "check_type": "lab_logic",
+      "description": "危急值无病程处置记录（删危急值处置段）",
+      "expect_status": "fail",
+      "also_expect": [],
+      "params": {
+        "lab_item": "钾",
+        "critical_value": "2.6",
+        "removed_section": "危急值处置记录"
+      }
+    }
+  ],
+  "notes": "评测按文档全部非 pass 集合对账；defect_id 与 M3 规则、M4 基准三方共用（plan/04 §7），不得单方改名。defects 仅主注入；同一注入隐含的其余结论记 also_expect。"
+}

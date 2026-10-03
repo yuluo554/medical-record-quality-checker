@@ -1,0 +1,87 @@
+{
+  "template_id": "appendicitis",
+  "disease": "急性阑尾炎（阑尾切除术）",
+  "form": "surgery",
+  "department": "普通外科",
+  "age_range": [18, 70],
+  "icd10": "K35.9",
+  "has_surgery": true,
+  "transfusion_variant": false,
+  "critical_lab_chance": 0.0,
+  "admission_dx": "急性阑尾炎",
+  "discharge_dx_pool": ["急性化脓性阑尾炎", "急性坏疽性阑尾炎", "急性单纯性阑尾炎"],
+  "diagnosis_basis": "转移性右下腹痛病史，右下腹麦氏点压痛、反跳痛阳性，血白细胞及中性粒细胞比例升高，影像学示阑尾区炎性改变",
+  "diff_diagnosis": "本病需与消化道穿孔、右侧输尿管结石、急性胰腺炎、急性肠系膜淋巴结炎等鉴别",
+  "complaints": [
+    {"tpl": "转移性右下腹痛{h}小时", "vars": {"h": [6, 48]}},
+    {"tpl": "右下腹痛{d}天，加重{h}小时", "vars": {"d": [1, 2], "h": [4, 12]}}
+  ],
+  "hpi_tpl": "患者{h}小时前无明显诱因出现脐周隐痛，{e}小时后疼痛转移并固定于右下腹，呈持续性胀痛，伴恶心，呕吐胃内容物{v}次，无发热，无腹泻及便血，未予诊治，症状渐加重，来我院急诊，查血常规白细胞升高，腹部超声提示阑尾区炎性改变，急诊以“急性阑尾炎”收入院。发病以来精神可，未进食，睡眠差，小便正常，未排便。",
+  "past_history_pool": [
+    "既往体健，否认高血压、糖尿病等慢性病史，否认肝炎、结核等传染病史，否认手术、外伤及输血史，否认药物及食物过敏史。",
+    "既往有2型糖尿病病史8年，皮下注射胰岛素控制血糖；否认肝炎、结核等传染病史，10年前于外院行阑尾以外手术史（具体不详），否认药物及食物过敏史。"
+  ],
+  "pe_tpl": "体温{t}℃　脉搏{p}次/分　呼吸{r}次/分　血压{sbp}/{dbp}mmHg，神志清楚，急性痛苦面容，心肺听诊未闻及明显异常，腹平坦，右下腹麦氏点压痛（+），反跳痛（+），局部肌紧张（+），结肠充气试验（+），肠鸣音3次/分。",
+  "assist_tpl": "急诊腹部超声（本院）：右下腹阑尾区探及条索状低回声，考虑急性阑尾炎；血常规：白细胞计数13.5×10^9/L。",
+  "first_course": {
+    "features_tpl": "患者{gender}，{age}岁，因“{complaint}”入院。查体右下腹麦氏点压痛（+）、反跳痛（+），血白细胞及中性粒细胞比例升高，腹部超声提示阑尾区炎性改变。",
+    "plan_tpl": "1.完善血生化、凝血功能、心电图、胸部X线等术前检查；2.禁食水，补液，予抗感染治疗；3.完善术前准备，拟行手术治疗。"
+  },
+  "daily_course_pool": [
+    "患者术后第1天，肛门已排气，进流质饮食，诉切口轻度疼痛，敷料干燥无渗出，体温37.0℃，继续抗感染、补液治疗。",
+    "患者恢复可，已下床活动，进半流质饮食，切口愈合良好，无发热，腹部体征无异常。"
+  ],
+  "discharge_orders": "1.注意休息，术后1个月内避免剧烈活动及重体力劳动；2.保持切口清洁干燥，术后7天门诊拆线；3.普通外科门诊随访复查；4.如出现发热、腹痛、切口红肿渗液等不适，及时就诊。",
+  "course_through_tpl": "患者因“{complaint}”入院，入院后完善相关检查，明确诊断为急性阑尾炎，于{op_dt}在{anesthesia}下行{op_name}，手术顺利，术后予抗感染、补液等治疗，恢复良好，切口愈合良好，准予今日出院。",
+  "ab_display": "头孢呋辛",
+  "meds": {
+    "antibiotics": [
+      {"drug": "注射用头孢呋辛钠", "dose": "1.5", "dose_unit": "g", "route": "静脉滴注", "frequency": "q8h", "level": "非限制级"},
+      {"drug": "甲硝唑注射液", "dose": "0.5", "dose_unit": "g", "route": "静脉滴注", "frequency": "q12h", "level": "非限制级"}
+    ],
+    "other": [],
+    "preop_temp": [
+      {"drug": "阿托品注射液", "dose": "0.5", "dose_unit": "mg", "route": "肌肉注射", "frequency": "术前30分钟"},
+      {"drug": "苯巴比妥钠注射液", "dose": "0.1", "dose_unit": "g", "route": "肌肉注射", "frequency": "术前30分钟"}
+    ],
+    "solvents": [{"drug": "0.9%氯化钠注射液", "dose": "250", "dose_unit": "ml", "route": "静脉滴注"}],
+    "special_antibiotic": {"drug": "注射用亚胺培南西司他丁钠", "dose": "0.5", "dose_unit": "g", "route": "静脉滴注", "frequency": "q8h", "level": "特殊使用级"}
+  },
+  "labs": [
+    {"category": "血常规", "report_offset_min": [60, 150], "items": [
+      {"item": "白细胞计数", "pool": ["12.3", "13.5", "14.8", "16.2"], "unit": "×10^9/L", "flag": "↑", "ref": "3.5-9.5"},
+      {"item": "中性粒细胞百分比", "pool": ["82.0", "86.5", "88.1", "90.2"], "unit": "%", "flag": "↑", "ref": "40-75"},
+      {"item": "血红蛋白", "pool": ["118", "126", "138", "150"], "unit": "g/L", "flag": "正常", "ref": "115-150"},
+      {"item": "血小板计数", "pool": ["190", "230", "270"], "unit": "×10^9/L", "flag": "正常", "ref": "125-350"}
+    ]},
+    {"category": "血生化", "report_offset_min": [1200, 1900], "items": [
+      {"item": "钾", "pool": ["3.7", "4.0", "4.2"], "unit": "mmol/L", "flag": "正常", "ref": "3.5-5.3"},
+      {"item": "葡萄糖", "pool": ["4.8", "5.6", "6.3"], "unit": "mmol/L", "flag": "正常", "ref": "3.9-6.1"}
+    ]},
+    {"category": "影像", "report_offset_min": [240, 480], "items": [
+      {"item": "下腹部CT", "value_text_pool": ["右下腹阑尾区炎性改变，周围渗出，考虑急性阑尾炎。"]}
+    ]},
+    {"category": "心电图", "report_offset_min": [90, 180], "items": [
+      {"item": "心电图", "value_text_pool": ["窦性心律，未见明显异常。"]}
+    ]}
+  ],
+  "critical_category": "血生化",
+  "critical_item": "钾",
+  "critical_handling_tpl": "检验科电话报告血钾{v}mmol/L，达危急值标准，已予静脉补钾、心电监护，嘱复查血电解质，并报告上级医师知晓，密切随访。",
+  "surgery": {
+    "name": "腹腔镜阑尾切除术",
+    "alt_name": "开腹阑尾切除术",
+    "preop_dx": "急性阑尾炎",
+    "postop_dx_pool": ["急性化脓性阑尾炎", "急性坏疽性阑尾炎", "急性单纯性阑尾炎"],
+    "anesthesia_pool": ["全身麻醉"],
+    "duration_min_range": [40, 90],
+    "start_offset_min_range": [1440, 2160],
+    "incision": "Ⅱ/甲",
+    "urgency_word": "急诊",
+    "finding_pool": ["阑尾充血水肿明显", "阑尾化脓改变，表面脓苔附着", "阑尾坏疽样改变，根部穿孔"],
+    "blood_ml_pool": ["3", "5", "10", "15"],
+    "op_note_tpl": "麻醉满意后常规消毒铺巾，于脐下缘建立气腹置入腹腔镜，探查见{finding}，顺行完整切除阑尾，标本送病理检查，术中出血约{blood_ml}ml，{blood_text}，术毕患者麻醉清醒后安返病房。",
+    "postop_course_tpl": "患者于今日在{anesthesia}下行{op_name}，手术顺利，术中出血约{blood_ml}ml，{blood_text2}，术后安返病房，予抗感染、补液治疗，密切观察腹部体征及切口情况。"
+  },
+  "blood_product": null
+}

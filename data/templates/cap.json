@@ -1,0 +1,73 @@
+{
+  "template_id": "cap",
+  "disease": "社区获得性肺炎",
+  "form": "internal_medicine",
+  "department": "呼吸内科",
+  "age_range": [18, 88],
+  "icd10": "J18.9",
+  "has_surgery": false,
+  "transfusion_variant": false,
+  "critical_lab_chance": 0.5,
+  "admission_dx": "社区获得性肺炎",
+  "discharge_dx_pool": ["社区获得性肺炎"],
+  "diagnosis_basis": "发热、咳嗽咳痰症状，右下肺湿性啰音，血白细胞及中性粒细胞比例升高，影像学示右肺下叶片状影",
+  "diff_diagnosis": "本病需与肺结核、肺脓肿、肺部肿瘤、急性支气管炎等鉴别",
+  "complaints": [
+    {"tpl": "发热、咳嗽咳痰{d}天", "vars": {"d": [3, 7]}},
+    {"tpl": "咳嗽、咳痰{d}天，加重伴发热{e}天", "vars": {"d": [3, 6], "e": [1, 2]}}
+  ],
+  "hpi_tpl": "患者{d}天前受凉后出现咳嗽咳痰，咳少量黄色黏痰，伴发热，体温最高{t}℃，无畏寒、寒战，无咯血，无胸痛及呼吸困难，自服止咳药物（具体不详）效果欠佳，今为求进一步诊治来我院，门诊查胸片提示右肺下叶片状影，门诊以“社区获得性肺炎”收入院。发病以来精神、饮食、睡眠尚可，大小便正常，体重无明显变化。",
+  "past_history_pool": [
+    "既往体健，否认高血压、糖尿病等慢性病史，否认肝炎、结核等传染病史，否认手术、外伤及输血史，否认药物及食物过敏史。",
+    "既往有高血压病史5年，口服苯磺酸氨氯地平片控制血压，血压控制可；否认肝炎、结核等传染病史，否认手术、外伤及输血史，否认药物及食物过敏史。"
+  ],
+  "pe_tpl": "体温{t}℃　脉搏{p}次/分　呼吸{r}次/分　血压{sbp}/{dbp}mmHg，神志清楚，急性病容，右下肺可闻及湿性啰音，心律齐，未闻及病理性杂音，腹平软，无压痛，双下肢无水肿。",
+  "assist_tpl": "门诊胸片（本院）：右肺下叶片状影。",
+  "first_course": {
+    "features_tpl": "患者{gender}，{age}岁，因“{complaint}”入院。查体右下肺可闻及湿性啰音，血白细胞及中性粒细胞比例升高，门诊胸片提示右肺下叶片状影。",
+    "plan_tpl": "1.完善血常规、C反应蛋白、血生化、胸部CT、心电图等检查；2.予抗感染、化痰等治疗；3.观察体温变化，复查血象及影像学。"
+  },
+  "daily_course_pool": [
+    "患者体温高峰较前下降，最高37.6℃，咳嗽咳痰较前减轻，双肺湿性啰音较前减少，继续目前抗感染、化痰治疗方案。",
+    "患者一般情况可，体温正常，诉偶有咳嗽，少量白痰，复查血常规白细胞恢复正常，继续巩固治疗。"
+  ],
+  "discharge_orders": "1.注意休息，避免受凉劳累；2.出院后遵医嘱口服药物巩固治疗；3.呼吸内科门诊随访复查胸部影像；4.如再次出现发热、咳嗽加重、咯血等不适，及时就诊。",
+  "course_through_tpl": "患者因“{complaint}”入院，入院后完善血常规、C反应蛋白、血生化、胸部CT等检查，明确诊断为社区获得性肺炎，予{ab}抗感染、盐酸氨溴索化痰等治疗{days}天，体温恢复正常，咳嗽咳痰明显减轻，复查血常规白细胞恢复正常，准予今日出院。",
+  "ab_display": "头孢呋辛",
+  "meds": {
+    "antibiotics": [
+      {"drug": "注射用头孢呋辛钠", "dose": "1.5", "dose_unit": "g", "route": "静脉滴注", "frequency": "q8h", "level": "非限制级"},
+      {"drug": "阿奇霉素注射液", "dose": "0.5", "dose_unit": "g", "route": "静脉滴注", "frequency": "qd", "level": "非限制级"},
+      {"drug": "左氧氟沙星注射液", "dose": "0.5", "dose_unit": "g", "route": "静脉滴注", "frequency": "qd", "level": "限制级"}
+    ],
+    "other": [
+      {"drug": "盐酸氨溴索注射液", "dose": "30", "dose_unit": "mg", "route": "静脉滴注", "frequency": "bid"}
+    ],
+    "preop_temp": [],
+    "solvents": [{"drug": "0.9%氯化钠注射液", "dose": "100", "dose_unit": "ml", "route": "静脉滴注"}],
+    "special_antibiotic": {"drug": "注射用亚胺培南西司他丁钠", "dose": "0.5", "dose_unit": "g", "route": "静脉滴注", "frequency": "q8h", "level": "特殊使用级"}
+  },
+  "labs": [
+    {"category": "血常规", "report_offset_min": [60, 150], "items": [
+      {"item": "白细胞计数", "pool": ["11.2", "12.5", "13.6", "15.1", "16.8"], "unit": "×10^9/L", "flag": "↑", "ref": "3.5-9.5"},
+      {"item": "中性粒细胞百分比", "pool": ["78.0", "82.4", "85.6", "86.0"], "unit": "%", "flag": "↑", "ref": "40-75"},
+      {"item": "血红蛋白", "pool": ["112", "125", "131", "142", "156"], "unit": "g/L", "flag": "正常", "ref": "115-150"},
+      {"item": "血小板计数", "pool": ["180", "220", "250", "310"], "unit": "×10^9/L", "flag": "正常", "ref": "125-350"},
+      {"item": "C反应蛋白", "pool": ["38.5", "45.2", "52.7", "68.0"], "unit": "mg/L", "flag": "↑", "ref": "0-10"}
+    ]},
+    {"category": "血生化", "report_offset_min": [1200, 1900], "items": [
+      {"item": "钾", "pool": ["3.8", "4.1", "4.3"], "unit": "mmol/L", "flag": "正常", "ref": "3.5-5.3", "critical_pool": ["2.5", "2.6", "2.8"]}
+    ]},
+    {"category": "影像", "report_offset_min": [240, 480], "items": [
+      {"item": "胸部CT", "value_text_pool": ["右肺下叶片状高密度影，考虑肺部感染性病变，建议随访复查。"]}
+    ]},
+    {"category": "心电图", "report_offset_min": [90, 180], "items": [
+      {"item": "心电图", "value_text_pool": ["窦性心律，未见明显异常。"]}
+    ]}
+  ],
+  "critical_category": "血生化",
+  "critical_item": "钾",
+  "critical_handling_tpl": "检验科电话报告血钾{v}mmol/L，达危急值标准，已予静脉补钾、心电监护，嘱复查血电解质，并报告上级医师知晓，密切随访。",
+  "surgery": null,
+  "blood_product": null
+}

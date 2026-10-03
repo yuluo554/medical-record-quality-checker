@@ -1,0 +1,22 @@
+{
+  "record_id": "defect_C-SURG-02_02",
+  "template_id": "gallstone",
+  "clean_pair": false,
+  "seed": 20261004,
+  "defects": [
+    {
+      "defect_id": "C-SURG-02",
+      "rule_id": "C-SURG-02",
+      "channel": "integrity",
+      "check_type": "cross_consistency",
+      "description": "手术记录术者与签名不一致（改术者签名姓名）",
+      "expect_status": "fail",
+      "also_expect": [],
+      "params": {
+        "surgeon_in_body": "徐丽",
+        "surgeon_in_signature": "王芳"
+      }
+    }
+  ],
+  "notes": "评测按文档全部非 pass 集合对账；defect_id 与 M3 规则、M4 基准三方共用（plan/04 §7），不得单方改名。defects 仅主注入；同一注入隐含的其余结论记 also_expect。"
+}

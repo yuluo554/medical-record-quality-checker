@@ -244,17 +244,28 @@ class LabResult:
 
 @dataclass
 class TimelineEvent:
-    """病程关键时间节点。event ∈ {入院, 术前讨论, 知情同意, 手术, 术后首次病程, 出院}。"""
+    """病程关键时间节点。
+
+    event 词汇表（M1 扩展，见 plan/06 决策记录）：
+      临床事件：入院 / 术前讨论 / 知情同意 / 手术 / 术后首次病程 / 出院
+      记录完成类（供 F-TIME-* 时效规则）：入院记录完成 / 首次病程记录
+      处置闭环类（供 C-LAB-01 / C-BLOOD-01）：危急值处置 / 用血审批
+
+    detail：事件附带的比对要点（纯文本，无证据包装）。
+    术前讨论事件固定存"拟施手术名称"，供 C-SURG-01 与手术记录术式比对。
+    """
 
     event: str
     time: Optional[FieldValue] = None
     source_part: str = ""  # 时间取自哪个部件
+    detail: str = ""  # 比对要点（如术前讨论的拟施术式名）
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "event": self.event,
             "time": self.time.to_dict() if self.time else None,
             "source_part": self.source_part,
+            "detail": self.detail,
         }
 
     @classmethod
@@ -263,6 +274,7 @@ class TimelineEvent:
             event=d.get("event", ""),
             time=_fv(d.get("time")),
             source_part=d.get("source_part", ""),
+            detail=d.get("detail", ""),
         )
 
 

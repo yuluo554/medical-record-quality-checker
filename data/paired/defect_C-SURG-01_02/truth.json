@@ -1,0 +1,1373 @@
+{
+  "patient": {
+    "name": {
+      "value": "彭玉华",
+      "unit": "",
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "part": "入院记录",
+          "quote": "姓名：彭玉华"
+        }
+      ]
+    },
+    "gender": {
+      "value": "男",
+      "unit": "",
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "part": "入院记录",
+          "quote": "性别：男"
+        }
+      ]
+    },
+    "age": {
+      "value": 68,
+      "unit": "岁",
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "part": "入院记录",
+          "quote": "年龄：68岁"
+        }
+      ]
+    },
+    "department": {
+      "value": "肝胆外科",
+      "unit": "",
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "part": "入院记录",
+          "quote": "科室：肝胆外科"
+        }
+      ]
+    },
+    "bed": {
+      "value": 11,
+      "unit": "",
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "part": "入院记录",
+          "quote": "床号：11床"
+        }
+      ]
+    },
+    "admission_date": {
+      "value": "2026-02-13 08:15",
+      "unit": "",
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "part": "入院记录",
+          "quote": "入院时间：2026-02-13 08:15"
+        }
+      ]
+    },
+    "discharge_date": {
+      "value": "2026-02-17 10:15",
+      "unit": "",
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "part": "出院记录",
+          "quote": "出院时间：2026-02-17 10:15"
+        }
+      ]
+    },
+    "hospital_days": {
+      "value": 4,
+      "unit": "天",
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "part": "出院记录",
+          "quote": "住院天数：4天"
+        }
+      ]
+    }
+  },
+  "diagnoses": [
+    {
+      "type": "入院",
+      "name": {
+        "value": "胆囊结石伴慢性胆囊炎",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "入院记录",
+            "quote": "入院诊断：胆囊结石伴慢性胆囊炎"
+          }
+        ]
+      },
+      "icd10": {
+        "value": "K80.1",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "入院记录",
+            "quote": "入院诊断：胆囊结石伴慢性胆囊炎"
+          }
+        ]
+      }
+    },
+    {
+      "type": "术前",
+      "name": {
+        "value": "胆囊结石伴慢性胆囊炎",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "手术记录",
+            "quote": "术前诊断：胆囊结石伴慢性胆囊炎"
+          }
+        ]
+      },
+      "icd10": {
+        "value": "K80.1",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "手术记录",
+            "quote": "术前诊断：胆囊结石伴慢性胆囊炎"
+          }
+        ]
+      }
+    },
+    {
+      "type": "术后",
+      "name": {
+        "value": "胆囊结石伴慢性胆囊炎",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "手术记录",
+            "quote": "术后诊断：胆囊结石伴慢性胆囊炎"
+          }
+        ]
+      },
+      "icd10": {
+        "value": "K80.1",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "手术记录",
+            "quote": "术后诊断：胆囊结石伴慢性胆囊炎"
+          }
+        ]
+      }
+    },
+    {
+      "type": "出院",
+      "name": {
+        "value": "胆囊结石伴慢性胆囊炎",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "出院记录",
+            "quote": "出院诊断：胆囊结石伴慢性胆囊炎"
+          }
+        ]
+      },
+      "icd10": {
+        "value": "K80.1",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "出院记录",
+            "quote": "出院诊断：胆囊结石伴慢性胆囊炎"
+          }
+        ]
+      }
+    }
+  ],
+  "surgeries": [
+    {
+      "name": {
+        "value": "开腹胆囊切除术",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "手术记录",
+            "quote": "手术名称：开腹胆囊切除术"
+          }
+        ]
+      },
+      "start_time": {
+        "value": "2026-02-14 09:00",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "手术记录",
+            "quote": "手术开始时间：2026-02-14 09:00"
+          }
+        ]
+      },
+      "duration_min": {
+        "value": 66,
+        "unit": "分钟",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "手术记录",
+            "quote": "手术结束时间：2026-02-14 10:06"
+          }
+        ]
+      },
+      "surgeon": {
+        "value": "李建国",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "手术记录",
+            "quote": "术者：李建国"
+          }
+        ]
+      },
+      "assistants": [
+        {
+          "value": "徐丽",
+          "unit": "",
+          "confidence": 1.0,
+          "evidence": [
+            {
+              "part": "手术记录",
+              "quote": "助手：徐丽、陈静"
+            }
+          ]
+        },
+        {
+          "value": "陈静",
+          "unit": "",
+          "confidence": 1.0,
+          "evidence": [
+            {
+              "part": "手术记录",
+              "quote": "助手：徐丽、陈静"
+            }
+          ]
+        }
+      ],
+      "anesthesia": {
+        "value": "全身麻醉",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "手术记录",
+            "quote": "麻醉方式：全身麻醉"
+          }
+        ]
+      },
+      "incision_healing": {
+        "value": "Ⅱ/甲",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "手术记录",
+            "quote": "切口愈合等级：Ⅱ/甲"
+          }
+        ]
+      }
+    }
+  ],
+  "medications": [
+    {
+      "drug_name": {
+        "value": "注射用头孢呋辛钠",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:00  注射用头孢呋辛钠 1.5g 静脉滴注 q12h  杨帆  2026-02-17 08:45  杨帆"
+          }
+        ]
+      },
+      "dose": {
+        "value": "1.5",
+        "unit": "g",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:00  注射用头孢呋辛钠 1.5g 静脉滴注 q12h  杨帆  2026-02-17 08:45  杨帆"
+          }
+        ]
+      },
+      "dose_unit": {
+        "value": "g",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:00  注射用头孢呋辛钠 1.5g 静脉滴注 q12h  杨帆  2026-02-17 08:45  杨帆"
+          }
+        ]
+      },
+      "route": {
+        "value": "静脉滴注",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:00  注射用头孢呋辛钠 1.5g 静脉滴注 q12h  杨帆  2026-02-17 08:45  杨帆"
+          }
+        ]
+      },
+      "frequency": {
+        "value": "q12h",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:00  注射用头孢呋辛钠 1.5g 静脉滴注 q12h  杨帆  2026-02-17 08:45  杨帆"
+          }
+        ]
+      },
+      "start_time": {
+        "value": "2026-02-13 09:00",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:00  注射用头孢呋辛钠 1.5g 静脉滴注 q12h  杨帆  2026-02-17 08:45  杨帆"
+          }
+        ]
+      },
+      "stop_time": {
+        "value": "2026-02-17 08:45",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:00  注射用头孢呋辛钠 1.5g 静脉滴注 q12h  杨帆  2026-02-17 08:45  杨帆"
+          }
+        ]
+      },
+      "is_antibiotic": {
+        "value": true,
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:00  注射用头孢呋辛钠 1.5g 静脉滴注 q12h  杨帆  2026-02-17 08:45  杨帆"
+          }
+        ]
+      },
+      "antibiotic_level": {
+        "value": "非限制级",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:00  注射用头孢呋辛钠 1.5g 静脉滴注 q12h  杨帆  2026-02-17 08:45  杨帆"
+          }
+        ]
+      },
+      "purpose": null
+    },
+    {
+      "drug_name": {
+        "value": "阿托品注射液",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-14 08:30  阿托品注射液 0.5mg 肌肉注射 术前30分钟  杨帆"
+          }
+        ]
+      },
+      "dose": {
+        "value": "0.5",
+        "unit": "mg",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-14 08:30  阿托品注射液 0.5mg 肌肉注射 术前30分钟  杨帆"
+          }
+        ]
+      },
+      "dose_unit": {
+        "value": "mg",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-14 08:30  阿托品注射液 0.5mg 肌肉注射 术前30分钟  杨帆"
+          }
+        ]
+      },
+      "route": {
+        "value": "肌肉注射",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-14 08:30  阿托品注射液 0.5mg 肌肉注射 术前30分钟  杨帆"
+          }
+        ]
+      },
+      "frequency": {
+        "value": "术前30分钟",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-14 08:30  阿托品注射液 0.5mg 肌肉注射 术前30分钟  杨帆"
+          }
+        ]
+      },
+      "start_time": {
+        "value": "2026-02-14 08:30",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-14 08:30  阿托品注射液 0.5mg 肌肉注射 术前30分钟  杨帆"
+          }
+        ]
+      },
+      "stop_time": null,
+      "is_antibiotic": {
+        "value": false,
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-14 08:30  阿托品注射液 0.5mg 肌肉注射 术前30分钟  杨帆"
+          }
+        ]
+      },
+      "antibiotic_level": null,
+      "purpose": null
+    },
+    {
+      "drug_name": {
+        "value": "0.9%氯化钠注射液",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:30  0.9%氯化钠注射液 250ml 静脉滴注   杨帆"
+          }
+        ]
+      },
+      "dose": {
+        "value": "250",
+        "unit": "ml",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:30  0.9%氯化钠注射液 250ml 静脉滴注   杨帆"
+          }
+        ]
+      },
+      "dose_unit": {
+        "value": "ml",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:30  0.9%氯化钠注射液 250ml 静脉滴注   杨帆"
+          }
+        ]
+      },
+      "route": {
+        "value": "静脉滴注",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:30  0.9%氯化钠注射液 250ml 静脉滴注   杨帆"
+          }
+        ]
+      },
+      "frequency": null,
+      "start_time": {
+        "value": "2026-02-13 09:30",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:30  0.9%氯化钠注射液 250ml 静脉滴注   杨帆"
+          }
+        ]
+      },
+      "stop_time": null,
+      "is_antibiotic": {
+        "value": false,
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:30  0.9%氯化钠注射液 250ml 静脉滴注   杨帆"
+          }
+        ]
+      },
+      "antibiotic_level": null,
+      "purpose": null
+    },
+    {
+      "drug_name": {
+        "value": "5%葡萄糖注射液",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:15  5%葡萄糖注射液 500ml 静脉滴注   杨帆"
+          }
+        ]
+      },
+      "dose": {
+        "value": "500",
+        "unit": "ml",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:15  5%葡萄糖注射液 500ml 静脉滴注   杨帆"
+          }
+        ]
+      },
+      "dose_unit": {
+        "value": "ml",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:15  5%葡萄糖注射液 500ml 静脉滴注   杨帆"
+          }
+        ]
+      },
+      "route": {
+        "value": "静脉滴注",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:15  5%葡萄糖注射液 500ml 静脉滴注   杨帆"
+          }
+        ]
+      },
+      "frequency": null,
+      "start_time": {
+        "value": "2026-02-13 09:15",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:15  5%葡萄糖注射液 500ml 静脉滴注   杨帆"
+          }
+        ]
+      },
+      "stop_time": null,
+      "is_antibiotic": {
+        "value": false,
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "医嘱单",
+            "quote": "2026-02-13 09:15  5%葡萄糖注射液 500ml 静脉滴注   杨帆"
+          }
+        ]
+      },
+      "antibiotic_level": null,
+      "purpose": null
+    }
+  ],
+  "labs": [
+    {
+      "item_name": {
+        "value": "白细胞计数",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "白细胞计数 11.0 ×10^9/L ↑（参考范围 3.5-9.5）"
+          }
+        ]
+      },
+      "value": {
+        "value": "11.0",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "白细胞计数 11.0 ×10^9/L ↑（参考范围 3.5-9.5）"
+          }
+        ]
+      },
+      "value_text": null,
+      "unit": {
+        "value": "×10^9/L",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "白细胞计数 11.0 ×10^9/L ↑（参考范围 3.5-9.5）"
+          }
+        ]
+      },
+      "abnormal_flag": {
+        "value": "↑",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "白细胞计数 11.0 ×10^9/L ↑（参考范围 3.5-9.5）"
+          }
+        ]
+      },
+      "is_critical": {
+        "value": false,
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "白细胞计数 11.0 ×10^9/L ↑（参考范围 3.5-9.5）"
+          }
+        ]
+      },
+      "report_time": {
+        "value": "2026-02-13 09:15",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "报告时间：2026-02-13 09:15"
+          }
+        ]
+      }
+    },
+    {
+      "item_name": {
+        "value": "中性粒细胞百分比",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "中性粒细胞百分比 72.0 % ↑（参考范围 40-75）"
+          }
+        ]
+      },
+      "value": {
+        "value": "72.0",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "中性粒细胞百分比 72.0 % ↑（参考范围 40-75）"
+          }
+        ]
+      },
+      "value_text": null,
+      "unit": {
+        "value": "%",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "中性粒细胞百分比 72.0 % ↑（参考范围 40-75）"
+          }
+        ]
+      },
+      "abnormal_flag": {
+        "value": "↑",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "中性粒细胞百分比 72.0 % ↑（参考范围 40-75）"
+          }
+        ]
+      },
+      "is_critical": {
+        "value": false,
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "中性粒细胞百分比 72.0 % ↑（参考范围 40-75）"
+          }
+        ]
+      },
+      "report_time": {
+        "value": "2026-02-13 09:15",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "报告时间：2026-02-13 09:15"
+          }
+        ]
+      }
+    },
+    {
+      "item_name": {
+        "value": "血红蛋白",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "血红蛋白 144 g/L 正常（参考范围 115-150）"
+          }
+        ]
+      },
+      "value": {
+        "value": "144",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "血红蛋白 144 g/L 正常（参考范围 115-150）"
+          }
+        ]
+      },
+      "value_text": null,
+      "unit": {
+        "value": "g/L",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "血红蛋白 144 g/L 正常（参考范围 115-150）"
+          }
+        ]
+      },
+      "abnormal_flag": {
+        "value": "正常",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "血红蛋白 144 g/L 正常（参考范围 115-150）"
+          }
+        ]
+      },
+      "is_critical": {
+        "value": false,
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "血红蛋白 144 g/L 正常（参考范围 115-150）"
+          }
+        ]
+      },
+      "report_time": {
+        "value": "2026-02-13 09:15",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "报告时间：2026-02-13 09:15"
+          }
+        ]
+      }
+    },
+    {
+      "item_name": {
+        "value": "血小板计数",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "血小板计数 200 ×10^9/L 正常（参考范围 125-350）"
+          }
+        ]
+      },
+      "value": {
+        "value": "200",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "血小板计数 200 ×10^9/L 正常（参考范围 125-350）"
+          }
+        ]
+      },
+      "value_text": null,
+      "unit": {
+        "value": "×10^9/L",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "血小板计数 200 ×10^9/L 正常（参考范围 125-350）"
+          }
+        ]
+      },
+      "abnormal_flag": {
+        "value": "正常",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "血小板计数 200 ×10^9/L 正常（参考范围 125-350）"
+          }
+        ]
+      },
+      "is_critical": {
+        "value": false,
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "血小板计数 200 ×10^9/L 正常（参考范围 125-350）"
+          }
+        ]
+      },
+      "report_time": {
+        "value": "2026-02-13 09:15",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "报告时间：2026-02-13 09:15"
+          }
+        ]
+      }
+    },
+    {
+      "item_name": {
+        "value": "钾",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "钾 4.2 mmol/L 正常（参考范围 3.5-5.3）"
+          }
+        ]
+      },
+      "value": {
+        "value": "4.2",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "钾 4.2 mmol/L 正常（参考范围 3.5-5.3）"
+          }
+        ]
+      },
+      "value_text": null,
+      "unit": {
+        "value": "mmol/L",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "钾 4.2 mmol/L 正常（参考范围 3.5-5.3）"
+          }
+        ]
+      },
+      "abnormal_flag": {
+        "value": "正常",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "钾 4.2 mmol/L 正常（参考范围 3.5-5.3）"
+          }
+        ]
+      },
+      "is_critical": {
+        "value": false,
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "钾 4.2 mmol/L 正常（参考范围 3.5-5.3）"
+          }
+        ]
+      },
+      "report_time": {
+        "value": "2026-02-14 12:15",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "报告时间：2026-02-14 12:15"
+          }
+        ]
+      }
+    },
+    {
+      "item_name": {
+        "value": "丙氨酸氨基转移酶",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "丙氨酸氨基转移酶 35 U/L 正常（参考范围 9-50）"
+          }
+        ]
+      },
+      "value": {
+        "value": "35",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "丙氨酸氨基转移酶 35 U/L 正常（参考范围 9-50）"
+          }
+        ]
+      },
+      "value_text": null,
+      "unit": {
+        "value": "U/L",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "丙氨酸氨基转移酶 35 U/L 正常（参考范围 9-50）"
+          }
+        ]
+      },
+      "abnormal_flag": {
+        "value": "正常",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "丙氨酸氨基转移酶 35 U/L 正常（参考范围 9-50）"
+          }
+        ]
+      },
+      "is_critical": {
+        "value": false,
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "丙氨酸氨基转移酶 35 U/L 正常（参考范围 9-50）"
+          }
+        ]
+      },
+      "report_time": {
+        "value": "2026-02-14 12:15",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "报告时间：2026-02-14 12:15"
+          }
+        ]
+      }
+    },
+    {
+      "item_name": {
+        "value": "总胆红素",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "总胆红素 12.5 μmol/L 正常（参考范围 3.4-17.1）"
+          }
+        ]
+      },
+      "value": {
+        "value": "12.5",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "总胆红素 12.5 μmol/L 正常（参考范围 3.4-17.1）"
+          }
+        ]
+      },
+      "value_text": null,
+      "unit": {
+        "value": "μmol/L",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "总胆红素 12.5 μmol/L 正常（参考范围 3.4-17.1）"
+          }
+        ]
+      },
+      "abnormal_flag": {
+        "value": "正常",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "总胆红素 12.5 μmol/L 正常（参考范围 3.4-17.1）"
+          }
+        ]
+      },
+      "is_critical": {
+        "value": false,
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "总胆红素 12.5 μmol/L 正常（参考范围 3.4-17.1）"
+          }
+        ]
+      },
+      "report_time": {
+        "value": "2026-02-14 12:15",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "报告时间：2026-02-14 12:15"
+          }
+        ]
+      }
+    },
+    {
+      "item_name": {
+        "value": "腹部超声",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "检查所见：胆囊大小约8.2cm×3.5cm，壁厚0.4cm，毛糙，囊内探及多个强回声光团伴声影，随体位移动，考虑胆囊结石并胆囊炎。"
+          }
+        ]
+      },
+      "value": null,
+      "value_text": {
+        "value": "胆囊大小约8.2cm×3.5cm，壁厚0.4cm，毛糙，囊内探及多个强回声光团伴声影，随体位移动，考虑胆囊结石并胆囊炎。",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "检查所见：胆囊大小约8.2cm×3.5cm，壁厚0.4cm，毛糙，囊内探及多个强回声光团伴声影，随体位移动，考虑胆囊结石并胆囊炎。"
+          }
+        ]
+      },
+      "unit": null,
+      "abnormal_flag": null,
+      "is_critical": null,
+      "report_time": {
+        "value": "2026-02-13 14:00",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "报告时间：2026-02-13 14:00"
+          }
+        ]
+      }
+    },
+    {
+      "item_name": {
+        "value": "心电图",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "检查所见：窦性心律，未见明显异常。"
+          }
+        ]
+      },
+      "value": null,
+      "value_text": {
+        "value": "窦性心律，未见明显异常。",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "检查所见：窦性心律，未见明显异常。"
+          }
+        ]
+      },
+      "unit": null,
+      "abnormal_flag": null,
+      "is_critical": null,
+      "report_time": {
+        "value": "2026-02-13 10:30",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "检验检查报告",
+            "quote": "报告时间：2026-02-13 10:30"
+          }
+        ]
+      }
+    }
+  ],
+  "timeline": [
+    {
+      "event": "入院",
+      "time": {
+        "value": "2026-02-13 08:15",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "入院记录",
+            "quote": "入院时间：2026-02-13 08:15"
+          }
+        ]
+      },
+      "source_part": "入院记录",
+      "detail": ""
+    },
+    {
+      "event": "入院记录完成",
+      "time": {
+        "value": "2026-02-13 08:30",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "入院记录",
+            "quote": "记录时间：2026-02-13 08:30"
+          }
+        ]
+      },
+      "source_part": "入院记录",
+      "detail": ""
+    },
+    {
+      "event": "首次病程记录",
+      "time": {
+        "value": "2026-02-13 11:00",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "病程记录",
+            "quote": "首次病程记录\n2026-02-13 11:00"
+          }
+        ]
+      },
+      "source_part": "病程记录",
+      "detail": ""
+    },
+    {
+      "event": "术前讨论",
+      "time": {
+        "value": "2026-02-14 06:00",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "病程记录",
+            "quote": "术前讨论\n2026-02-14 06:00"
+          }
+        ]
+      },
+      "source_part": "病程记录",
+      "detail": "腹腔镜胆囊切除术"
+    },
+    {
+      "event": "手术",
+      "time": {
+        "value": "2026-02-14 09:00",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "手术记录",
+            "quote": "手术开始时间：2026-02-14 09:00"
+          }
+        ]
+      },
+      "source_part": "手术记录",
+      "detail": ""
+    },
+    {
+      "event": "术后首次病程",
+      "time": {
+        "value": "2026-02-14 10:30",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "病程记录",
+            "quote": "术后首次病程记录\n2026-02-14 10:30"
+          }
+        ]
+      },
+      "source_part": "病程记录",
+      "detail": ""
+    },
+    {
+      "event": "出院",
+      "time": {
+        "value": "2026-02-17 10:15",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "出院记录",
+            "quote": "出院时间：2026-02-17 10:15"
+          }
+        ]
+      },
+      "source_part": "出院记录",
+      "detail": ""
+    }
+  ],
+  "signatures": [
+    {
+      "role": "住院医师",
+      "name": {
+        "value": "杨帆",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "入院记录",
+            "quote": "记录者：杨帆（住院医师）"
+          }
+        ]
+      },
+      "date": {
+        "value": "2026-02-13",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "入院记录",
+            "quote": "记录时间：2026-02-13 08:30"
+          }
+        ]
+      }
+    },
+    {
+      "role": "术者",
+      "name": {
+        "value": "李建国",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "手术记录",
+            "quote": "术者签名：李建国（术者）"
+          }
+        ]
+      },
+      "date": {
+        "value": "2026-02-14",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "手术记录",
+            "quote": "手术开始时间：2026-02-14 09:00"
+          }
+        ]
+      }
+    },
+    {
+      "role": "主治医师",
+      "name": {
+        "value": "周敏",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "出院记录",
+            "quote": "上级审签：周敏（主治医师）"
+          }
+        ]
+      },
+      "date": {
+        "value": "2026-02-17",
+        "unit": "",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "part": "出院记录",
+            "quote": "出院时间：2026-02-17 10:15"
+          }
+        ]
+      }
+    }
+  ],
+  "parse_warnings": []
+}

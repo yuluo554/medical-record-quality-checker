@@ -1,0 +1,23 @@
+{
+  "record_id": "defect_F-TIME-03_03",
+  "template_id": "appendicitis",
+  "clean_pair": false,
+  "seed": 20261004,
+  "defects": [
+    {
+      "defect_id": "F-TIME-03",
+      "rule_id": "F-TIME-03",
+      "channel": "formal",
+      "check_type": "timeliness",
+      "description": "术后首次病程记录超时限（改完成时间）",
+      "expect_status": "fail",
+      "also_expect": [],
+      "params": {
+        "field": "术后首次病程记录-完成时间",
+        "value": "2026-02-04 02:15",
+        "limit_hours": "即时（待核对）"
+      }
+    }
+  ],
+  "notes": "评测按文档全部非 pass 集合对账；defect_id 与 M3 规则、M4 基准三方共用（plan/04 §7），不得单方改名。defects 仅主注入；同一注入隐含的其余结论记 also_expect。"
+}

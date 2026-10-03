@@ -1,0 +1,8 @@
+{
+  "record_id": "ctrl_appendicitis_04",
+  "template_id": "appendicitis",
+  "clean_pair": true,
+  "seed": 20261004,
+  "defects": [],
+  "notes": "评测按文档全部非 pass 集合对账；defect_id 与 M3 规则、M4 基准三方共用（plan/04 §7），不得单方改名。defects 仅主注入；同一注入隐含的其余结论记 also_expect。"
+}

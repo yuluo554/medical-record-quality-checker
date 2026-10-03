@@ -1,0 +1,21 @@
+{
+  "record_id": "defect_F-REQ-01_01",
+  "template_id": "cap",
+  "clean_pair": false,
+  "seed": 20261004,
+  "defects": [
+    {
+      "defect_id": "F-REQ-01",
+      "rule_id": "F-REQ-01",
+      "channel": "formal",
+      "check_type": "required_field",
+      "description": "缺主诉必填段（删除主诉行）",
+      "expect_status": "fail",
+      "also_expect": [],
+      "params": {
+        "removed_section": "主诉"
+      }
+    }
+  ],
+  "notes": "评测按文档全部非 pass 集合对账；defect_id 与 M3 规则、M4 基准三方共用（plan/04 §7），不得单方改名。defects 仅主注入；同一注入隐含的其余结论记 also_expect。"
+}

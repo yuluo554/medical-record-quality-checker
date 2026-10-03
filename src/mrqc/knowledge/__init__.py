@@ -11,8 +11,11 @@ __all__ = ["knowledge_dir", "knowledge_status"]
 
 
 def knowledge_dir() -> pathlib.Path:
-    """项目内知识库根目录（仓体内的 data/knowledge）。"""
-    return pathlib.Path(__file__).resolve().parents[2] / "data" / "knowledge"
+    """项目内知识库根目录（仓体内的 data/knowledge）。
+
+    文件位于 src/mrqc/knowledge/，parents[3] 才是仓体根（parents[2] 是 src/）。
+    """
+    return pathlib.Path(__file__).resolve().parents[3] / "data" / "knowledge"
 
 
 def knowledge_status() -> dict:

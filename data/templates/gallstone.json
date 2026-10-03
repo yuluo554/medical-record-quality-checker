@@ -1,0 +1,86 @@
+{
+  "template_id": "gallstone",
+  "disease": "胆囊结石（腹腔镜胆囊切除术）",
+  "form": "surgery",
+  "department": "肝胆外科",
+  "age_range": [25, 75],
+  "icd10": "K80.1",
+  "has_surgery": true,
+  "transfusion_variant": true,
+  "critical_lab_chance": 0.0,
+  "admission_dx": "胆囊结石伴慢性胆囊炎",
+  "discharge_dx_pool": ["胆囊结石伴慢性胆囊炎"],
+  "diagnosis_basis": "间断右上腹痛病史，右上腹压痛、Murphy征阳性，腹部超声提示胆囊结石、胆囊壁增厚",
+  "diff_diagnosis": "本病需与急性胰腺炎、胃十二指肠溃疡穿孔、急性肝炎、右肾结石等鉴别",
+  "complaints": [
+    {"tpl": "间断右上腹痛{m}个月，再发加重{d}天", "vars": {"m": [3, 24], "d": [1, 3]}},
+    {"tpl": "右上腹痛{d}天", "vars": {"d": [1, 4]}}
+  ],
+  "hpi_tpl": "患者{m}个月前进食油腻食物后出现右上腹隐痛，无放射，可自行缓解，未系统诊治。{d}天前再发右上腹疼痛，呈持续性胀痛，伴右肩背部放射痛，伴恶心，呕吐胃内容物{v}次，伴低热，体温最高37.8℃，无皮肤巩膜黄染，来我院门诊，腹部超声提示胆囊结石、胆囊壁增厚，以“胆囊结石伴慢性胆囊炎”收入院。发病以来精神、睡眠尚可，饮食差，大小便正常，体重无明显变化。",
+  "past_history_pool": [
+    "既往体健，否认高血压、糖尿病等慢性病史，否认肝炎、结核等传染病史，否认手术、外伤及输血史，否认药物及食物过敏史。",
+    "既往有高血压病史10年，口服缬沙坦胶囊控制血压，血压控制可；否认肝炎、结核等传染病史，否认手术、外伤及输血史，否认药物及食物过敏史。"
+  ],
+  "pe_tpl": "体温{t}℃　脉搏{p}次/分　呼吸{r}次/分　血压{sbp}/{dbp}mmHg，神志清楚，皮肤巩膜无黄染，心肺听诊未闻及明显异常，腹平坦，右上腹压痛（+），无反跳痛，Murphy征（+），肝脾肋下未及，肠鸣音4次/分。",
+  "assist_tpl": "门诊腹部超声（本院）：胆囊壁增厚毛糙，囊腔内探及多个强回声光团伴声影，考虑胆囊结石并胆囊炎。",
+  "first_course": {
+    "features_tpl": "患者{gender}，{age}岁，因“{complaint}”入院。查体右上腹压痛（+），Murphy征（+），腹部超声提示胆囊结石、胆囊壁增厚毛糙。",
+    "plan_tpl": "1.完善血生化、凝血功能、心电图、胸部X线等术前检查；2.低脂饮食，予抗感染、补液治疗；3.完善术前准备，拟行手术治疗。"
+  },
+  "daily_course_pool": [
+    "患者术后第1天，肛门已排气，进低脂流质饮食，诉切口轻度疼痛，敷料干燥无渗出，体温36.8℃，继续抗感染、补液治疗。",
+    "患者恢复可，已下床活动，进低脂半流质饮食，切口愈合良好，无发热，无腹痛腹胀。"
+  ],
+  "discharge_orders": "1.低脂饮食，避免油腻食物及暴饮暴食；2.保持切口清洁干燥，术后7天门诊拆线；3.肝胆外科门诊随访复查腹部超声；4.如出现发热、腹痛、皮肤巩膜黄染等不适，及时就诊。",
+  "course_through_tpl": "患者因“{complaint}”入院，入院后完善相关检查，明确诊断为胆囊结石伴慢性胆囊炎，于{op_dt}在{anesthesia}下行{op_name}，手术顺利，术后予抗感染、补液等治疗，恢复良好，切口愈合良好，准予今日出院。",
+  "ab_display": "头孢呋辛",
+  "meds": {
+    "antibiotics": [
+      {"drug": "注射用头孢呋辛钠", "dose": "1.5", "dose_unit": "g", "route": "静脉滴注", "frequency": "q12h", "level": "非限制级"}
+    ],
+    "other": [],
+    "preop_temp": [
+      {"drug": "阿托品注射液", "dose": "0.5", "dose_unit": "mg", "route": "肌肉注射", "frequency": "术前30分钟"}
+    ],
+    "solvents": [{"drug": "0.9%氯化钠注射液", "dose": "250", "dose_unit": "ml", "route": "静脉滴注"}, {"drug": "5%葡萄糖注射液", "dose": "500", "dose_unit": "ml", "route": "静脉滴注"}],
+    "special_antibiotic": {"drug": "注射用亚胺培南西司他丁钠", "dose": "0.5", "dose_unit": "g", "route": "静脉滴注", "frequency": "q8h", "level": "特殊使用级"}
+  },
+  "labs": [
+    {"category": "血常规", "report_offset_min": [60, 150], "items": [
+      {"item": "白细胞计数", "pool": ["9.8", "11.0", "12.6"], "unit": "×10^9/L", "flag": "↑", "ref": "3.5-9.5"},
+      {"item": "中性粒细胞百分比", "pool": ["72.0", "76.5", "80.1"], "unit": "%", "flag": "↑", "ref": "40-75"},
+      {"item": "血红蛋白", "pool": ["120", "132", "144", "158"], "unit": "g/L", "flag": "正常", "ref": "115-150"},
+      {"item": "血小板计数", "pool": ["200", "240", "290"], "unit": "×10^9/L", "flag": "正常", "ref": "125-350"}
+    ]},
+    {"category": "血生化", "report_offset_min": [1200, 1900], "items": [
+      {"item": "钾", "pool": ["3.9", "4.2", "4.4"], "unit": "mmol/L", "flag": "正常", "ref": "3.5-5.3"},
+      {"item": "丙氨酸氨基转移酶", "pool": ["28", "35", "42", "58"], "unit": "U/L", "flag": "正常", "ref": "9-50"},
+      {"item": "总胆红素", "pool": ["12.5", "15.8", "18.2"], "unit": "μmol/L", "flag": "正常", "ref": "3.4-17.1"}
+    ]},
+    {"category": "影像", "report_offset_min": [240, 480], "items": [
+      {"item": "腹部超声", "value_text_pool": ["胆囊大小约8.2cm×3.5cm，壁厚0.4cm，毛糙，囊内探及多个强回声光团伴声影，随体位移动，考虑胆囊结石并胆囊炎。"]}
+    ]},
+    {"category": "心电图", "report_offset_min": [90, 180], "items": [
+      {"item": "心电图", "value_text_pool": ["窦性心律，未见明显异常。"]}
+    ]}
+  ],
+  "critical_category": "血生化",
+  "critical_item": "钾",
+  "critical_handling_tpl": "检验科电话报告血钾{v}mmol/L，达危急值标准，已予静脉补钾、心电监护，嘱复查血电解质，并报告上级医师知晓，密切随访。",
+  "surgery": {
+    "name": "腹腔镜胆囊切除术",
+    "alt_name": "开腹胆囊切除术",
+    "preop_dx": "胆囊结石伴慢性胆囊炎",
+    "postop_dx_pool": ["胆囊结石伴慢性胆囊炎"],
+    "anesthesia_pool": ["全身麻醉"],
+    "duration_min_range": [50, 100],
+    "start_offset_min_range": [1440, 2160],
+    "incision": "Ⅱ/甲",
+    "urgency_word": "择期",
+    "finding_pool": ["胆囊壁充血水肿，囊内可及多发结石", "胆囊与周围网膜轻度粘连，囊内多发结石"],
+    "blood_ml_pool": ["5", "10", "15", "20"],
+    "op_note_tpl": "麻醉满意后常规消毒铺巾，于脐下缘建立气腹置入腹腔镜，探查见{finding}，顺行切除胆囊，标本送病理检查，术中出血约{blood_ml}ml，{blood_text}，术毕患者麻醉清醒后安返病房。",
+    "postop_course_tpl": "患者于今日在{anesthesia}下行{op_name}，手术顺利，术中出血约{blood_ml}ml，{blood_text2}，术后安返病房，予抗感染、补液治疗，密切观察腹部体征及切口情况。"
+  },
+  "blood_product": {"drug": "去白细胞悬浮红细胞", "dose": "2", "dose_unit": "U", "route": "静脉输注", "frequency": "术中一次"}
+}

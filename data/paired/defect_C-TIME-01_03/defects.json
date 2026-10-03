@@ -1,0 +1,22 @@
+{
+  "record_id": "defect_C-TIME-01_03",
+  "template_id": "appendicitis",
+  "clean_pair": false,
+  "seed": 20261004,
+  "defects": [
+    {
+      "defect_id": "C-TIME-01",
+      "rule_id": "C-TIME-01",
+      "channel": "integrity",
+      "check_type": "timeline_logic",
+      "description": "出院时间早于手术时间（改出院时间）",
+      "expect_status": "fail",
+      "also_expect": [],
+      "params": {
+        "discharge_time": "2026-03-29 16:30",
+        "surgery_time": "2026-03-30 15:45"
+      }
+    }
+  ],
+  "notes": "评测按文档全部非 pass 集合对账；defect_id 与 M3 规则、M4 基准三方共用（plan/04 §7），不得单方改名。defects 仅主注入；同一注入隐含的其余结论记 also_expect。"
+}

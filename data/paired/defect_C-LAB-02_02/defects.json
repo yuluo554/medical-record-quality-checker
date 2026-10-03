@@ -1,0 +1,25 @@
+{
+  "record_id": "defect_C-LAB-02_02",
+  "template_id": "appendicitis",
+  "clean_pair": false,
+  "seed": 20261004,
+  "defects": [
+    {
+      "defect_id": "C-LAB-02",
+      "rule_id": "C-LAB-02",
+      "channel": "integrity",
+      "check_type": "lab_logic",
+      "description": "重度贫血值无处置与诊断（改血红蛋白值）",
+      "expect_status": "fail",
+      "also_expect": [
+        "C-LAB-01"
+      ],
+      "params": {
+        "lab_item": "血红蛋白",
+        "value": "48",
+        "report_category": "血常规"
+      }
+    }
+  ],
+  "notes": "评测按文档全部非 pass 集合对账；defect_id 与 M3 规则、M4 基准三方共用（plan/04 §7），不得单方改名。defects 仅主注入；同一注入隐含的其余结论记 also_expect。"
+}
