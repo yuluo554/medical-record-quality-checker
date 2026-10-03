@@ -50,6 +50,7 @@ flowchart LR
 ```bash
 git clone https://github.com/yuluo554/medical-record-quality-checker.git
 cd medical-record-quality-checker
+python -m pip install --upgrade pip  # 旧版 pip（Python 3.8 自带 20.x）不支持 pyproject-only editable 安装，先升级
 pip install -e ".[dev,web,report]"   # 核心零第三方依赖；extras 为交付形态组件
 pytest                               # 全离线测试（含 extras 守门）
 mrqc demo                            # 架构自检演示
