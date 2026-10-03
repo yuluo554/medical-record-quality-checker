@@ -21,7 +21,9 @@
 | 六部件解析器 → 参数卡（解析 F1 基准 + 证据逐字摘录校验） | ✅ |
 | 三层知识库（规范原文→条文块→机器可读规则 33 条全挂依据）+ 双通道规则引擎 | ✅ |
 | LLM 兜底（防幻觉三件套；失败全路径自动降级纯规则通路） | ✅ |
-| docx 质控报告 + Web 面板（免构建 0 外链） | ⬜ M5 |
+| 端到端流水线 `mrqc run`（解析→LLM兜底→质控→汇总→导出，五节点编排） | ✅ |
+| docx 质控报告（签署栏+免责声明+分级统计+依据关联，0 外链） | ✅ |
+| Web 面板（FastAPI 免构建内联单页，multipart 上传，0 外链断网可演示） | ✅ |
 | 脱敏审计 + 干净环境验证 + GitHub 发布 | ⬜ M6 |
 
 ## 架构
@@ -58,9 +60,11 @@ mrqc demo                            # 架构自检演示
 ```bash
 mrqc parse --input data/samples/xxx/   # 部件目录 → 病历参数卡 JSON
 mrqc check --input data/samples/xxx/   # → 质控结论 JSON（含规范依据；LLM 已配置时先做低置信字段兜底）
-mrqc run --input ... --report out.docx # 端到端 + docx 报告（M5）
+mrqc run --input data/samples/xxx/     # 端到端五节点流水线 → 结论 JSON + 分级统计
+mrqc run --input ... --report out.docx # 同上 + docx 质控报告（签署栏/免责声明/依据关联）
 mrqc benchmark parse                   # 解析 F1 基准（门槛 F1 ≥ 0.95）
 mrqc benchmark detect                  # 端到端检出基准（门槛：检出率 ≥ 0.95 且干净集误报 0）
+py -X utf8 -m mrqc.web --port 8000     # Web 面板（浏览器打开 http://127.0.0.1:8000；0 外链断网可演示）
 ```
 
 ## 内置评测基准
@@ -83,7 +87,8 @@ mrqc benchmark detect                  # 端到端检出基准（门槛：检出
 ```
 ├── src/mrqc/          # 解析 / 参数卡 / 规则引擎 / 知识库 / LLM 兜底 / 编排 / 报告 / Web
 ├── data/              # templates 病种模板 / samples 合成病历+真值 / paired 配对评测集 / knowledge 规范库
-├── benchmarks/        # 解析 F1 与端到端检出基准（M2/M4）
+├── benchmarks/        # 解析 F1 与端到端检出基准 + 报告样例（M2/M4/M5）
+├── docs/              # 演示视频脚本等交付材料
 ├── tests/             # 全离线测试（含 extras 守门测试）
 ├── plan/              # 计划文档 00–06、决策记录、跨会话 HANDOFF
 └── .github/workflows/ # CI：Python 3.8/3.10/3.12，显式安装全量 extras
@@ -98,7 +103,7 @@ mrqc benchmark detect                  # 端到端检出基准（门槛：检出
 | M2 解析层 | 六部件解析器 → 参数卡，解析 F1 基准出数 | ✅ |
 | M3 知识与规则 | 三层知识库 + 双通道规则引擎（≥30 条，全部挂依据） | ✅ |
 | M4 LLM 兜底+基准达标 | LLM 客户端（降级/防幻觉）+ F1 ≥ 0.95、干净集误报 0、指标入 README | ✅ |
-| M5 编排与交付 | `mrqc run` + docx 报告 + Web 面板（0 外链断网可演示） | ⬜ |
+| M5 编排与交付 | `mrqc run` + docx 报告 + Web 面板（0 外链断网可演示） | ✅ |
 | M6 发布 | 脱敏审计 + 干净环境验证 + GitHub 发布 | ⬜ |
 
 ## 限制

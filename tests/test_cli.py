@@ -40,8 +40,46 @@ def test_check_with_empty_rules(tmp_path):
     assert rc == 0
 
 
-def test_run_report_and_benchmark_not_implemented(tmp_path):
-    assert main(["run", "--input", str(tmp_path), "--report", "out.docx"]) == 2
+def test_run_end_to_end_prints_conclusion_json(capsys):
+    """M5 run：五节点端到端 → stdout 结论 JSON（含分级统计），rc=0。"""
+    rc = main(["run", "--input", str(REPO_ROOT / "data" / "paired" / "defect_C-LAB-02_01")])
+    assert rc == 0
+    data = json.loads(capsys.readouterr().out)
+    assert data["record_id"] == "defect_C-LAB-02_01"
+    assert data["summary"]["overall"] == "fail"
+    assert data["summary"]["n_rules"] == 33
+    assert any(f["status"] != "pass" for f in data["findings"])
+    assert set(data["timings"]) == {"解析", "LLM兜底", "质控", "汇总", "导出"}
+
+
+def test_run_report_exports_docx(tmp_path, capsys):
+    pytest.importorskip("docx", reason="report extra 未安装：pip install 'mrqc[report]'")
+    out = tmp_path / "r.docx"
+    rc = main(["run", "--input", str(REPO_ROOT / "data" / "paired" / "defect_C-LAB-02_01"),
+               "--report", str(out)])
+    assert rc == 0
+    assert out.is_file()
+    assert "已导出 docx" in capsys.readouterr().err
+
+
+def test_run_report_missing_dep_exit_2(tmp_path, monkeypatch, capsys):
+    """--report 依赖预检：缺 python-docx 时 exit 2 + 安装提示（不跑完质控才失败）。"""
+    import mrqc.report as report_mod
+
+    monkeypatch.setattr(report_mod, "docx_available", lambda: False)
+    rc = main(["run", "--input", str(REPO_ROOT / "data" / "paired" / "defect_C-LAB-02_01"),
+               "--report", str(tmp_path / "x.docx")])
+    assert rc == 2
+    assert "pip install 'mrqc[report]'" in capsys.readouterr().err
+
+
+def test_run_missing_input_exit_1(tmp_path, capsys):
+    rc = main(["run", "--input", str(tmp_path / "nope")])
+    assert rc == 1
+    assert "输入目录不存在" in capsys.readouterr().err
+
+
+def test_benchmark_no_name_exit_2():
     assert main(["benchmark"]) == 2
 
 

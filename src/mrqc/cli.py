@@ -4,7 +4,7 @@
   demo       架构自检演示（M0 即可用）
   parse      病历部件目录 → 参数卡 JSON（M2 完整实现）
   check      参数卡 + 规则库 → 质控结论（M3 完整实现）
-  run        端到端：parse → check → （--report 导出 docx）（M5）
+  run        端到端 Pipeline：解析 → LLM 兜底 → 质控 → 汇总 → 导出（M5 完整实现）
   benchmark  内置评测基准（M2/M4）
 """
 
@@ -71,7 +71,12 @@ def _cmd_demo(args: argparse.Namespace) -> int:
           % (ks["raw"], ks["blocks"], ks["rules"]))
     print("  [ok] LLM 兜底（低置信字段补抽 + 防幻觉回验）：%s"
           % ("已配置" if llm_available() else "未配置（自动走纯规则通路）"))
-    print("  [--] 报告导出 / Web 面板：M5")
+    from .report import docx_available
+    from .web import web_available
+    print("  [ok] 报告导出（mrqc run --report → docx：签署栏/免责声明/分级统计/依据关联）：%s"
+          % ("可用" if docx_available() else "缺 python-docx（pip install 'mrqc[report]'）"))
+    print("  [ok] Web 面板（py -m mrqc.web，内联单页 0 外链断网可演示）：%s"
+          % ("可用" if web_available() else "缺 fastapi/uvicorn（pip install 'mrqc[web]'）"))
     print()
     print("演示运行：解析 → 质控（%d 条规则 → %d 条结论），流水线节点耗时："
           % (len(engine.rules), len(findings)))
@@ -97,36 +102,16 @@ def _cmd_parse(args: argparse.Namespace) -> int:
     return 0
 
 
-def _run_llm_fallback(card, part_texts) -> None:
-    """M4 LLM 兜底：低置信字段补抽。未配置静默走纯规则通路；失败降级不阻塞。"""
-    from .llm import apply_fallback
-
-    try:
-        stats = apply_fallback(card, part_texts)
-    except Exception as exc:  # noqa: BLE001 —— 兜底层任何意外都不得阻塞质控主流程
-        print("[LLM兜底] 意外失败已降级纯规则通路：%s" % exc, file=sys.stderr)
-        return
-    if not stats.get("available"):
-        return  # 未配置：静默（demo 已展示配置状态）
-    if stats.get("reason"):
-        print("[LLM兜底] %s" % stats["reason"], file=sys.stderr)
-        return
-    if not stats.get("n_low_conf"):
-        return  # 无低置信字段：无事可报
-    print("[LLM兜底] 低置信字段 %d 个：应用 %d（丢弃：quote 非逐字 %d / 数值或时间非法 %d / 其他 %d）"
-          % (stats["n_low_conf"], stats["n_applied"], stats["n_dropped_quote"],
-             stats["n_dropped_range"], stats["n_dropped_other"]), file=sys.stderr)
-
-
 def _cmd_check(args: argparse.Namespace) -> int:
     from .knowledge import knowledge_dir
     from .parsers import load_part_texts, parse_texts
+    from .pipeline.stages import run_llm_fallback
     from .rules import RuleEngine
 
     part_texts, warnings = load_part_texts(Path(args.input))
     card = parse_texts(part_texts)
     card.parse_warnings[:0] = warnings  # 目录级告警排前（与 parse_record_dir 同口径）
-    _run_llm_fallback(card, part_texts)  # M4：低置信字段补抽（未配置自动跳过）
+    run_llm_fallback(card, part_texts)  # M4：低置信字段补抽（未配置自动跳过）
     engine = RuleEngine.load(knowledge_dir() / "rules")
     findings = engine.check(card, part_texts=part_texts)
     print(json.dumps([f.to_dict() for f in findings], ensure_ascii=False, indent=2))
@@ -142,9 +127,51 @@ def _cmd_check(args: argparse.Namespace) -> int:
 
 
 def _cmd_run(args: argparse.Namespace) -> int:
+    """M5 端到端：Pipeline 五节点（解析 → LLM兜底 → 质控 → 汇总 → 导出）。
+
+    产出：结论 JSON（stdout，含分级统计/解析告警/节点耗时）+ 汇总行（stderr）；
+    --report 时由导出节点产出 docx（依赖预检：缺 python-docx 直接 exit 2 给安装提示，
+    不跑完质控才失败）。
+    """
+    from .pipeline import CTX_CARD, CTX_FINDINGS, CTX_SUMMARY, CTX_TIMINGS
+    from .pipeline.stages import build_pipeline
+
     if args.report:
-        return _not_implemented("--report docx 导出在 M5 实现（plan/05 里程碑 M5）")
-    return _cmd_check(args)
+        from .report import docx_available
+
+        if not docx_available():
+            print("[缺依赖] --report 需要 python-docx：pip install 'mrqc[report]'",
+                  file=sys.stderr)
+            return 2
+
+    input_dir = Path(args.input)
+    pipe = build_pipeline(input_dir, report_path=args.report)
+    ctx = pipe.run()
+    if not pipe.success:
+        print("[错误] 流水线失败：%s"
+              % "；".join(r.error for r in pipe.results if not r.ok), file=sys.stderr)
+        return 1
+
+    card = ctx[CTX_CARD]
+    result = {
+        "record_id": input_dir.name,
+        "patient": card.patient.to_dict(),
+        "findings": [f.to_dict() for f in ctx[CTX_FINDINGS]],
+        "summary": ctx[CTX_SUMMARY],
+        "parse_warnings": card.parse_warnings,
+        "timings": dict(ctx[CTX_TIMINGS]),
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    summary = ctx[CTX_SUMMARY]
+    n_rules = summary["n_rules"] if summary["n_rules"] is not None else 0
+    print("[汇总] 总体结论：%s ｜ 参评规则 %d 条：通过 %d / 不通过 %d / 待人工确认 %d"
+          % (summary["overall_label"], n_rules, summary["n_pass"],
+             summary["n_fail"], summary["n_need_confirm"]), file=sys.stderr)
+    print("[耗时] %s" % "  ".join("%s %.3fs" % (k, v)
+                                  for k, v in ctx[CTX_TIMINGS].items()), file=sys.stderr)
+    if args.report:
+        print("[报告] 已导出 docx：%s" % args.report, file=sys.stderr)
+    return 0
 
 
 def _cmd_benchmark(args: argparse.Namespace) -> int:
@@ -206,9 +233,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_check.add_argument("--input", required=True, help="病历部件集合目录（含 *.txt）")
     p_check.set_defaults(fn=_cmd_check)
 
-    p_run = sub.add_parser("run", help="端到端：解析 → 质控 → （可选 --report 导出 docx）")
+    p_run = sub.add_parser("run", help="端到端：解析 → LLM 兜底 → 质控 → 汇总 → 导出")
     p_run.add_argument("--input", required=True, help="病历部件集合目录（含 *.txt）")
-    p_run.add_argument("--report", default="", help="输出 docx 报告路径（M5）")
+    p_run.add_argument("--report", default="", help="输出 docx 报告路径（可选，需 report 组件）")
     p_run.set_defaults(fn=_cmd_run)
 
     p_bench = sub.add_parser("benchmark", help="内置评测基准（parse = 解析 F1；detect = 端到端检出）")

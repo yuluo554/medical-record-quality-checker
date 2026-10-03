@@ -19,6 +19,7 @@
 | [HANDOFF-M3.md](HANDOFF-M3.md) | M2 收尾交接快照（M3 待办/既定口径/环境坑/DoD/命令速查） | ✅ 2026-10-03 |
 | [HANDOFF-M4.md](HANDOFF-M4.md) | M3 收尾交接快照（M4 待办/既定口径/环境坑/DoD/命令速查） | ✅ 2026-10-03 |
 | [HANDOFF-M5.md](HANDOFF-M5.md) | M4 收尾交接快照（M5 待办/既定口径/环境坑/DoD/命令速查） | ✅ 2026-10-03 |
+| [HANDOFF-M6.md](HANDOFF-M6.md) | M5 收尾交接快照（M6 待办/既定口径/环境坑/DoD/命令速查） | ✅ 2026-10-03 |
 
 ## 决策记录
 
@@ -31,5 +32,5 @@
 - ✅ **M2 解析层**（2026-10-03 完成）：6 部件解析器 `src/mrqc/parsers/`（规则优先、证据逐字摘录、告警不外抛、CAP 无手术记录不误报）+ parse_f1 基准（`mrqc benchmark parse` / `benchmarks/parse_f1.py`，samples 60 份 P=R=F1=1.0000 首版、paired 54 份同分；指标口径见 plan/06）+ 证据逐字子串全量校验 0 违规；65 项测试全绿
 - ✅ **M3 知识与规则**（2026-10-03 完成）：知识库三层补齐（blocks 42 条文块程序化摘取自 raw 保逐字 + rules 33 条全挂 basis，14 缺陷 ID 全覆盖、7 类 check_type 全注册，only_if 门控对真实规则生效）；`mrqc/eval/detect.py` 配对集检出评测：**主缺陷检出率 100%（45/45，含 F-TIME-03 以 need_confirm 形式检出）、干净对照 12 份误报 0、非预期结论 0、依据关联率 100%**（首版报告 `benchmarks/m3_detect_report.md`）；required_field 数据源定稿（消费解析层 parse_warnings，plan/06）；105 项测试全绿
 - ✅ **M4 LLM 兜底 + 基准达标**（2026-10-03 完成）：LLM 客户端 `mrqc/llm/client.py`（stdlib urllib、重试退避、qwen `enable_thinking=false`、max_tokens 截断 JSON 只回收闭合前缀）+ 兜底抽取管线 `mrqc/llm/fallback.py`（低置信触发 / 候选行压缩 / quote 逐字回验 / 数值与时间合法性校验，失败全路径降级纯规则通路，CLI check 已接线）；e2e 检出基准门槛化（干净误报 0 + 检出率 ≥0.95 默认启用）并接进 `mrqc benchmark detect`；**parse F1=1.0000 守恒（TP=7664/FP=0/FN=0）、检出率 100%、干净误报 0、依据关联率 100%**；指标写入 README（含合成数据声明）；150 项测试全绿（新增 45，全离线 mock 零 API 依赖）
-- ⬜ M5 编排与交付：CLI 端到端 + docx 质控报告 + Web 面板（0 外链）
+- ✅ **M5 编排与交付**（2026-10-03 完成）：`mrqc run` 五节点流水线（`mrqc/pipeline/stages.py` 节点库：解析→LLM兜底→质控→汇总→导出，CLI/Web 共用同源；stdout 结论 JSON + 分级统计 + 节点耗时）；docx 报告 `mrqc/report/__init__.py`（首页免责声明 + 基本信息 + 分级统计 + 逐条依据关联（文号+条款+摘录）+ 通过项简表 + 签署栏；0 外链由 rels 扫描测试守门）；Web 面板 `mrqc/web/`（FastAPI 免构建内联单页 CSS/JS 全内联、multipart 上传、/docs /redoc openapi 显式关闭、0 外链静态断言；`py -m mrqc.web` 启动）；真实上传冒烟 = pytest 内真实 uvicorn 子进程 + stdlib urllib multipart + curl 实传 + 浏览器 IAB 页面渲染/点击/状态拉取验证；extras 守门扩展（第三方运行期 import 收敛到 report//web/ 包内惰性守卫）；**173 项测试全绿（M5 新增 23）、parse F1=1.0000 / 检出率 100% / 干净误报 0 / 依据关联率 100% 全守恒**；演示物 = 报告样例 benchmarks/m5_report_sample.docx + 演示视频脚本 docs/demo_video_script.md。偏差说明见 plan/05 M5 行
 - ⬜ M6 脱敏发布 GitHub + 收尾固化（tag/release/topics）

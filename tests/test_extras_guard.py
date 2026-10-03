@@ -50,3 +50,37 @@ def test_ci_installs_all_extras():
     ci = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
     assert '.[dev,web,report]"' in ci, "CI 必须显式安装全量 extras（防静默少跑）"
     assert '"3.8"' in ci, "CI 必须覆盖 Python 3.8 底线（requires-python 对齐）"
+
+
+def _src_py_files():
+    return sorted((ROOT / "src" / "mrqc").rglob("*.py"))
+
+
+def test_runtime_third_party_imports_confined_to_extras_packages():
+    """M5：report/web 运行期 import 必须收敛在各自包内（惰性守卫唯一入口）。
+
+    docx 只允许出现在 mrqc/report/；fastapi/uvicorn 只允许出现在 mrqc/web/。
+    其他模块（含 CLI/编排层）一律经由 mrqc.report / mrqc.web 的可用性探针，
+    防止第三方运行期 import 逃逸到核心通路（核心通路零第三方依赖纪律）。
+    """
+    confined = {
+        ("import docx", "from docx"): "report",
+        ("import fastapi", "from fastapi", "import uvicorn", "from uvicorn"): "web",
+    }
+    for path in _src_py_files():
+        rel = path.relative_to(ROOT / "src" / "mrqc").as_posix()
+        text = path.read_text(encoding="utf-8")
+        for patterns, package in confined.items():
+            hit = any(re.search(r"^\s*%s\b" % re.escape(p), text, re.M) for p in patterns)
+            if hit:
+                assert rel.startswith(package + "/") or rel == package + "__init__.py", \
+                    "第三方运行期 import 逃逸：%s 引用了 %s extra 的包" % (rel, package)
+
+
+def test_web_page_no_external_links():
+    """Web 单页 0 外链（断网可演示）：内联页文本禁含外链引用。"""
+    from mrqc.web import _PAGE_HTML
+
+    assert "http://" not in _PAGE_HTML and "https://" not in _PAGE_HTML
+    for banned in ("<link", "script src", "@import"):
+        assert banned not in _PAGE_HTML
