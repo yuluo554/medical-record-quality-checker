@@ -20,6 +20,8 @@
 | [HANDOFF-M4.md](HANDOFF-M4.md) | M3 收尾交接快照（M4 待办/既定口径/环境坑/DoD/命令速查） | ✅ 2026-10-03 |
 | [HANDOFF-M5.md](HANDOFF-M5.md) | M4 收尾交接快照（M5 待办/既定口径/环境坑/DoD/命令速查） | ✅ 2026-10-03 |
 | [HANDOFF-M6.md](HANDOFF-M6.md) | M5 收尾交接快照（M6 待办/既定口径/环境坑/DoD/命令速查） | ✅ 2026-10-03 |
+| [RELEASE-M6.md](RELEASE-M6.md) | M6 脱敏审计留档（四步命令+结论+干净环境验证+发布执行记录） | ✅ 2026-10-03 |
+| [HANDOFF-FINAL.md](HANDOFF-FINAL.md) | 发布收尾交接快照（终态基线/历史重写与三扫记录/环境事实/复跑命令） | ✅ 2026-10-03 |
 
 ## 决策记录
 
@@ -33,4 +35,4 @@
 - ✅ **M3 知识与规则**（2026-10-03 完成）：知识库三层补齐（blocks 42 条文块程序化摘取自 raw 保逐字 + rules 33 条全挂 basis，14 缺陷 ID 全覆盖、7 类 check_type 全注册，only_if 门控对真实规则生效）；`mrqc/eval/detect.py` 配对集检出评测：**主缺陷检出率 100%（45/45，含 F-TIME-03 以 need_confirm 形式检出）、干净对照 12 份误报 0、非预期结论 0、依据关联率 100%**（首版报告 `benchmarks/m3_detect_report.md`）；required_field 数据源定稿（消费解析层 parse_warnings，plan/06）；105 项测试全绿
 - ✅ **M4 LLM 兜底 + 基准达标**（2026-10-03 完成）：LLM 客户端 `mrqc/llm/client.py`（stdlib urllib、重试退避、qwen `enable_thinking=false`、max_tokens 截断 JSON 只回收闭合前缀）+ 兜底抽取管线 `mrqc/llm/fallback.py`（低置信触发 / 候选行压缩 / quote 逐字回验 / 数值与时间合法性校验，失败全路径降级纯规则通路，CLI check 已接线）；e2e 检出基准门槛化（干净误报 0 + 检出率 ≥0.95 默认启用）并接进 `mrqc benchmark detect`；**parse F1=1.0000 守恒（TP=7664/FP=0/FN=0）、检出率 100%、干净误报 0、依据关联率 100%**；指标写入 README（含合成数据声明）；150 项测试全绿（新增 45，全离线 mock 零 API 依赖）
 - ✅ **M5 编排与交付**（2026-10-03 完成）：`mrqc run` 五节点流水线（`mrqc/pipeline/stages.py` 节点库：解析→LLM兜底→质控→汇总→导出，CLI/Web 共用同源；stdout 结论 JSON + 分级统计 + 节点耗时）；docx 报告 `mrqc/report/__init__.py`（首页免责声明 + 基本信息 + 分级统计 + 逐条依据关联（文号+条款+摘录）+ 通过项简表 + 签署栏；0 外链由 rels 扫描测试守门）；Web 面板 `mrqc/web/`（FastAPI 免构建内联单页 CSS/JS 全内联、multipart 上传、/docs /redoc openapi 显式关闭、0 外链静态断言；`py -m mrqc.web` 启动）；真实上传冒烟 = pytest 内真实 uvicorn 子进程 + stdlib urllib multipart + curl 实传 + 浏览器 IAB 页面渲染/点击/状态拉取验证；extras 守门扩展（第三方运行期 import 收敛到 report//web/ 包内惰性守卫）；**173 项测试全绿（M5 新增 23）、parse F1=1.0000 / 检出率 100% / 干净误报 0 / 依据关联率 100% 全守恒**；演示物 = 报告样例 benchmarks/m5_report_sample.docx + 演示视频脚本 docs/demo_video_script.md。偏差说明见 plan/05 M5 行
-- ⬜ M6 脱敏发布 GitHub + 收尾固化（tag/release/topics）
+- ✅ **M6 发布**（2026-10-03 完成）：脱敏四步全过并留档 [plan/RELEASE-M6.md](RELEASE-M6.md)（文件名 0 命中；内容扫描误报 3 类甄别，本机绝对路径 12 处改仓库相对占位；docx zip 17 条目扫描干净（creator=python-docx）；提交元数据 QQ 邮箱经用户确认全历史改写 GitHub noreply、HANDOFF blob 本机路径同批 tree-filter 清除，refs/original/reflog/gc 清理后终验三扫全 0）；干净环境验证全绿（全新 venv 抓出并修复 py3.8 原装 pip 20.x 不支持 pyproject-only editable——README 补升级 pip 步；pytest 173 与 dev 一致、demo/parse/check/run --report、双基准 rc=0、Web 冒烟 4 项）；GitHub 公开仓发布 + description/topics（D-02 用户确认原案）+ tag v0.1.0 + release（用户确认）；发布后复核记录见 [HANDOFF-FINAL.md](HANDOFF-FINAL.md)

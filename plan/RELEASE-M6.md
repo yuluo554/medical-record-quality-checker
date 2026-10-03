@@ -93,3 +93,11 @@ git grep -nIE "sk-[A-Za-z0-9]{8}|1[3-9][0-9]{9}|[0-9]{17}[0-9Xx]|C:.Users.|ASUS"
 git grep -nIE "<本机目录关键词>|<个人邮箱字面值>" -- .    # 固定字面值不入档，见 HANDOFF-FINAL 记录
 git log --format='%ae %ce' | sort -u                    # 应只剩 noreply
 ```
+
+## 发布执行记录（2026-10-03）
+
+- **全历史脱敏重写**：`git filter-branch --env-filter`（全部 8 提交 author/committer → GitHub noreply）+ `--tree-filter`（HANDOFF blob 本机路径字面值清除，与工作区占位化同法）；refs/original 删除 + reflog expire + `gc --prune=now`；预验（rev-list 逐提交 blob 扫描 4 个固定字面值）全 0；终验三扫在收尾提交后执行；
+- **建仓**：`gh repo create yuluo554/medical-record-quality-checker --public --source . --remote origin`（**不带 `--push`**——规避 OAuth token 缺 `workflow` scope 且历史含 `.github/workflows/*` 时推送被拒的半失败态，方法论实录教训）→ remote 切 SSH（`ssh -T` 验证有 key）→ `git push -u origin main` 一次成功；
+- **元信息**：description 按 D-02 原案建仓时写入；topics 7 个：`medical-record` `quality-control` `clinical-nlp` `llm` `rule-engine` `healthcare` `ehr`；
+- **tag v0.1.0 + release**：本提交落库并 push 后立即执行（用户已确认）；notes = 基准表数值 + 演示命令摘要 + extras 说明；
+- **发布后复核**（GitHub 全新 clone 历史三扫 + 全量测试 + 两轮以上 CI 结果 + README 渲染）：记录见 [HANDOFF-FINAL.md](HANDOFF-FINAL.md)。
