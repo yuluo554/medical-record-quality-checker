@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mrqc"
+version = "0.1.0"
+description = "出院病历内涵质控智能审核系统：形式+内涵双通道质控、规范依据关联、内置可复现评测基准"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "yuluo554" }]
+keywords = ["medical-record", "quality-control", "clinical-nlp", "rule-engine", "healthcare"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Healthcare Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+# 核心通路零第三方依赖：解析（规则优先）/参数卡/规则引擎/基准全部标准库实现
+dependencies = []
+
+[project.optional-dependencies]
+report = ["python-docx>=0.8.11"]
+# python-multipart 是 FastAPI UploadFile 的运行期隐式依赖，缺它 uvicorn 启动即崩——
+# extras 守门测试锁定，不许移除
+web = ["fastapi>=0.100", "uvicorn>=0.20", "python-multipart>=0.0.5"]
+dev = ["pytest>=7"]
+
+[project.scripts]
+mrqc = "mrqc.cli:main"
+
+[project.urls]
+# 仓库创建后回填（见 plan/06 决策记录）
+Homepage = "https://github.com/yuluo554/medical-record-quality-checker"
+Repository = "https://github.com/yuluo554/medical-record-quality-checker"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

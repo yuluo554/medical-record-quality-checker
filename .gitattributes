@@ -1,0 +1,10 @@
+# EOL 门：统一 LF，防止 Windows autocrlf 把检出文件重写成 CRLF
+# （冻结 fixtures / 位级可复现生成器的仓库必配，姊妹项目实测教训）
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.docx binary
+*.pdf binary
+*.zip binary

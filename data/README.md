@@ -2,6 +2,17 @@
 
 > 规则（ai-tool-project-sprint 阶段1）：每份数据登记来源与许可；规范条目挂出处+status；程序化自制带真值数据是核心资产（固定 seed 可复现，可注入已知缺陷做配对评测）。`_private/` 目录不入仓。
 
+## 目录约定（M1 起填充）
+
+| 目录 | 内容 | 产出方 |
+|---|---|---|
+| `templates/` | 3 病种病历模板（部件骨架+字段槽位+注入点标记） | 手工设计 |
+| `samples/` | 合成病历部件集合 + truth.json（参数卡形状真值） | 生成器（固定 seed） |
+| `paired/` | 植入缺陷配对评测集 + defects.json | 生成器（注入模式） |
+| `knowledge/raw/` | 5 份卫健委规范原文 txt（逐份挂渠道+URL+日期） | 外部查证获取 |
+| `knowledge/blocks/` | 条文块 json（M3，检索用） | 从 raw 派生 |
+| `knowledge/rules/` | 机器可读规则表 json（M3，schema 见 plan/04 §3） | 从 blocks 派生 |
+
 ## 登记表
 
 | 数据 | 类型 | 来源 | 许可 | 状态 |

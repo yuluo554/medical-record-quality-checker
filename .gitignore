@@ -16,6 +16,10 @@ output/
 reports/
 *.log
 
+# 打包产物
+build/
+dist/
+
 # 系统文件
 Thumbs.db
 Desktop.ini

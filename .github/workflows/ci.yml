@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install package with all extras
+        # 显式装全量 extras：防止测试期依赖缺失导致整模块静默跳过（dev 绿但悄悄少跑）
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev,web,report]"
+      - name: Run tests
+        run: pytest
+      - name: CLI smoke
+        run: mrqc demo
