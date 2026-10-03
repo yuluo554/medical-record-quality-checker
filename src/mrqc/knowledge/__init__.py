@@ -19,15 +19,36 @@ def knowledge_dir() -> pathlib.Path:
 
 
 def knowledge_status() -> dict:
-    """知识库三层现状盘点（供 CLI demo/状态展示与测试用）。"""
+    """知识库三层现状盘点（供 CLI demo/状态展示与测试用）。
+
+    raw 计文件数；blocks/rules 计条目数（块/条，读 json 汇总），
+    目录缺失或文件损坏计 0（盘点不抛异常）。
+    """
+    import json
+
     root = knowledge_dir()
 
     def count(sub: str, pattern: str) -> int:
         d = root / sub
         return len(list(d.glob(pattern))) if d.is_dir() else 0
 
+    def count_entries(sub: str, key: str) -> int:
+        d = root / sub
+        if not d.is_dir():
+            return 0
+        total = 0
+        for path in sorted(d.glob("*.json")):
+            try:
+                data = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                continue
+            items = data.get(key, []) if isinstance(data, dict) else data
+            if isinstance(items, list):
+                total += len(items)
+        return total
+
     return {
         "raw": count("raw", "*.txt"),
-        "blocks": count("blocks", "*.json"),
-        "rules": count("rules", "*.json"),
+        "blocks": count_entries("blocks", "blocks"),
+        "rules": count_entries("rules", "rules"),
     }

@@ -1,0 +1,446 @@
+{
+  "channel": "integrity",
+  "description": "M3 规则表（integrity通道）；schema 见 plan/04 §3，由 tools/build_knowledge.py 生成",
+  "rules": [
+    {
+      "id": "C-DIAG-01",
+      "name": "感染性出院诊断缺抗菌用药医嘱",
+      "type": "cross_consistency",
+      "severity": "HIGH",
+      "channel": "integrity",
+      "basis": {
+        "document": "住院病案首页数据填写质量规范（暂行）",
+        "document_no": "国卫办医发〔2016〕24号",
+        "clause": "第五条",
+        "quote": "第五条 住院病案首页应当使用规范的疾病诊断和手术操作名称。诊断依据应在病历中可追溯。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "compare": "diagnosis_medication",
+        "diagnosis_keywords": [
+          "肺炎",
+          "肺部感染"
+        ],
+        "require_drug": "antibiotic"
+      },
+      "suggestion_template": "出院诊断“{diag}”全程无抗菌药物医嘱，诊断依据不可追溯，请核对医嘱或补充诊断依据。"
+    },
+    {
+      "id": "C-SURG-01",
+      "name": "手术记录术式与术前讨论不一致",
+      "type": "cross_consistency",
+      "severity": "HIGH",
+      "channel": "integrity",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第三条",
+        "quote": "第三条  病历书写应当客观、真实、准确、及时、完整、规范。",
+        "status": "已核对"
+      },
+      "only_if": {
+        "any_keyword": [
+          "手术记录"
+        ]
+      },
+      "params": {
+        "compare": "surgery_name_vs_preop"
+      },
+      "suggestion_template": "手术记录术式“{performed}”与术前讨论拟施术式“{planned}”不一致，请核对。"
+    },
+    {
+      "id": "C-SURG-02",
+      "name": "手术记录术者与术者签名不一致",
+      "type": "cross_consistency",
+      "severity": "HIGH",
+      "channel": "integrity",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第八条",
+        "quote": "第八条  病历应当按照规定的内容书写，并由相应医务人员签名。\n\n实习医务人员、试用期医务人员书写的病历，应当经过本医疗机构注册的医务人员审阅、修改并签名。\n\n进修医务人员由医疗机构根据其胜任本专业工作实际情况认定后书写病历。",
+        "status": "已核对"
+      },
+      "only_if": {
+        "any_keyword": [
+          "手术记录"
+        ]
+      },
+      "params": {
+        "compare": "surgeon_vs_operator_signature"
+      },
+      "suggestion_template": "手术记录术者“{surgeon}”与术者签名“{signed}”不一致，请核对。"
+    },
+    {
+      "id": "C-ORD-01",
+      "name": "医嘱停止时间晚于出院时间",
+      "type": "cross_consistency",
+      "severity": "HIGH",
+      "channel": "integrity",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第二十八条",
+        "quote": "第二十八条　医嘱是指医师在医疗活动中下达的医学指令。医嘱单分为长期医嘱单和临时医嘱单。\n\n长期医嘱单内容包括患者姓名、科别、住院病历号（或病案号）、页码、起始日期和时间、长期医嘱内容、停止日期和时间、医师签名、执行时间、执行护士签名。临时医嘱单内容包括医嘱时间、临时医嘱内容、医师签名、执行时间、执行护士签名等。\n\n医嘱内容及起始、停止时间应当由医师书写。医嘱内容应当准确、清楚，每项医嘱应当只包含一个内容，并注明下达时间，应当具体到分钟。医嘱不得涂改。需要取消时，应当使用红色墨水标注“取消”字样并签名。\n\n一般情况下，医师不得下达口头医嘱。因抢救急危患者需要下达口头医嘱时，护士应当复诵一遍。抢救结束后，医师应当即刻据实补记医嘱。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "compare": "med_stop_vs_discharge"
+      },
+      "suggestion_template": "医嘱“{drug}”停止时间（{stop}）晚于出院时间（{discharge}），请核对医嘱时限。"
+    },
+    {
+      "id": "R-X-05",
+      "name": "出院记录入院时间与入院记录不一致",
+      "type": "cross_consistency",
+      "severity": "MEDIUM",
+      "channel": "integrity",
+      "basis": {
+        "document": "住院病案首页数据填写质量规范（暂行）",
+        "document_no": "国卫办医发〔2016〕24号",
+        "clause": "第八条",
+        "quote": "第八条 入院时间是指患者实际入病房的接诊时间；出院时间是指患者治疗结束或终止治疗离开病房的时间，其中死亡患者是指其死亡时间；记录时间应当精确到分钟。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "compare": "admission_date_across_parts"
+      },
+      "suggestion_template": "出院记录入院时间（{in_discharge}）与入院记录（{in_admission}）不一致，请核对。"
+    },
+    {
+      "id": "R-X-06",
+      "name": "住院天数与出入院日期不符",
+      "type": "cross_consistency",
+      "severity": "MEDIUM",
+      "channel": "integrity",
+      "basis": {
+        "document": "住院病案首页数据填写质量规范（暂行）",
+        "document_no": "国卫办医发〔2016〕24号",
+        "clause": "第三条",
+        "quote": "第三条 住院病案首页填写应当客观、真实、及时、规范，项目填写完整，准确反映住院期间诊疗信息。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "compare": "hospital_days_vs_dates"
+      },
+      "suggestion_template": "住院天数填写 {days} 天，按出入院日期计算应为 {computed} 天，请核对。"
+    },
+    {
+      "id": "R-X-07",
+      "name": "手术记录术后诊断与出院诊断不一致",
+      "type": "cross_consistency",
+      "severity": "MEDIUM",
+      "channel": "integrity",
+      "basis": {
+        "document": "住院病案首页数据填写质量规范（暂行）",
+        "document_no": "国卫办医发〔2016〕24号",
+        "clause": "第五条",
+        "quote": "第五条 住院病案首页应当使用规范的疾病诊断和手术操作名称。诊断依据应在病历中可追溯。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "compare": "postop_dx_vs_discharge_dx"
+      },
+      "suggestion_template": "术后诊断“{postop}”与出院诊断“{discharge}”不一致，可能为补充诊断或笔误，请人工确认。"
+    },
+    {
+      "id": "C-ANTI-01",
+      "name": "特殊使用级抗菌药无审批记录",
+      "type": "medication_logic",
+      "severity": "CRITICAL",
+      "channel": "integrity",
+      "basis": {
+        "document": "医疗质量安全核心制度要点",
+        "document_no": "国卫医发〔2018〕8号",
+        "clause": "十六-3",
+        "quote": "3.医疗机构应当建立全院特殊使用级抗菌药物会诊专家库，按照规定规范特殊使用级抗菌药物使用流程。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "check": "special_antibiotic_approval",
+        "level": "特殊使用级",
+        "approval_keywords": [
+          "会诊",
+          "审批",
+          "核准"
+        ]
+      },
+      "suggestion_template": "使用特殊使用级抗菌药物“{drug}”，病程中未见会诊/审批记录，请核查分级管理流程。"
+    },
+    {
+      "id": "C-BLOOD-01",
+      "name": "术中用血无用血审批病程记录",
+      "type": "medication_logic",
+      "severity": "HIGH",
+      "channel": "integrity",
+      "basis": {
+        "document": "医疗质量安全核心制度要点",
+        "document_no": "国卫医发〔2018〕8号",
+        "clause": "十七-2",
+        "quote": "2.临床用血审核包括但不限于用血申请、输血治疗知情同意、适应证判断、配血、取血发血、临床输血、输血中观察和输血后管理等环节，并全程记录，保障信息可追溯，健全临床合理用血评估与结果应用制度、输血不良反应监测和处置流程。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "check": "blood_approval"
+      },
+      "suggestion_template": "术中输注{drug}但病程中无用血审批记录，请核查临床用血审核流程。"
+    },
+    {
+      "id": "R-MED-03",
+      "name": "长期医嘱缺剂量或频次",
+      "type": "medication_logic",
+      "severity": "MEDIUM",
+      "channel": "integrity",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第二十八条",
+        "quote": "第二十八条　医嘱是指医师在医疗活动中下达的医学指令。医嘱单分为长期医嘱单和临时医嘱单。\n\n长期医嘱单内容包括患者姓名、科别、住院病历号（或病案号）、页码、起始日期和时间、长期医嘱内容、停止日期和时间、医师签名、执行时间、执行护士签名。临时医嘱单内容包括医嘱时间、临时医嘱内容、医师签名、执行时间、执行护士签名等。\n\n医嘱内容及起始、停止时间应当由医师书写。医嘱内容应当准确、清楚，每项医嘱应当只包含一个内容，并注明下达时间，应当具体到分钟。医嘱不得涂改。需要取消时，应当使用红色墨水标注“取消”字样并签名。\n\n一般情况下，医师不得下达口头医嘱。因抢救急危患者需要下达口头医嘱时，护士应当复诵一遍。抢救结束后，医师应当即刻据实补记医嘱。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "check": "order_completeness",
+        "scope": "longterm",
+        "fields": [
+          "dose",
+          "frequency"
+        ]
+      },
+      "suggestion_template": "长期医嘱“{drug}”缺少{missing}，医嘱内容应准确、清楚，请补全。"
+    },
+    {
+      "id": "R-MED-04",
+      "name": "抗菌药物医嘱未标注分级",
+      "type": "medication_logic",
+      "severity": "MEDIUM",
+      "channel": "integrity",
+      "basis": {
+        "document": "医疗质量安全核心制度要点",
+        "document_no": "国卫医发〔2018〕8号",
+        "clause": "十六-1",
+        "quote": "1.根据抗菌药物的安全性、疗效、细菌耐药性和价格等因素，抗菌药物分为非限制使用级、限制使用级与特殊使用级三级。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "check": "antibiotic_level_present"
+      },
+      "suggestion_template": "抗菌药物“{drug}”未标注分级（非限制/限制/特殊使用级），请补标。"
+    },
+    {
+      "id": "R-MED-05",
+      "name": "临时医嘱缺开始时间",
+      "type": "medication_logic",
+      "severity": "LOW",
+      "channel": "integrity",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第二十八条",
+        "quote": "第二十八条　医嘱是指医师在医疗活动中下达的医学指令。医嘱单分为长期医嘱单和临时医嘱单。\n\n长期医嘱单内容包括患者姓名、科别、住院病历号（或病案号）、页码、起始日期和时间、长期医嘱内容、停止日期和时间、医师签名、执行时间、执行护士签名。临时医嘱单内容包括医嘱时间、临时医嘱内容、医师签名、执行时间、执行护士签名等。\n\n医嘱内容及起始、停止时间应当由医师书写。医嘱内容应当准确、清楚，每项医嘱应当只包含一个内容，并注明下达时间，应当具体到分钟。医嘱不得涂改。需要取消时，应当使用红色墨水标注“取消”字样并签名。\n\n一般情况下，医师不得下达口头医嘱。因抢救急危患者需要下达口头医嘱时，护士应当复诵一遍。抢救结束后，医师应当即刻据实补记医嘱。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "check": "order_completeness",
+        "scope": "temporary",
+        "fields": [
+          "start_time"
+        ]
+      },
+      "suggestion_template": "临时医嘱“{drug}”缺少开始时间，医嘱应注明下达时间并具体到分钟，请补全。"
+    },
+    {
+      "id": "C-LAB-01",
+      "name": "危急值无病程处置记录",
+      "type": "lab_logic",
+      "severity": "HIGH",
+      "channel": "integrity",
+      "basis": {
+        "document": "医疗质量安全核心制度要点",
+        "document_no": "国卫医发〔2018〕8号",
+        "clause": "十四-5",
+        "quote": "5.临床科室任何接收到危急值信息的人员应当准确记录、复读、确认危急值结果，并立即通知相关医师。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "check": "critical_closed_loop",
+        "handling_marker": "危急值处置"
+      },
+      "suggestion_template": "检验项“{item}”出现危急值（{value} {unit}），病程中未见危急值处置记录，请核查报告闭环。"
+    },
+    {
+      "id": "C-LAB-02",
+      "name": "危急值血红蛋白无处置且诊断未体现",
+      "type": "lab_logic",
+      "severity": "HIGH",
+      "channel": "integrity",
+      "basis": {
+        "document": "医疗质量安全核心制度要点",
+        "document_no": "国卫医发〔2018〕8号",
+        "clause": "十四-5",
+        "quote": "5.临床科室任何接收到危急值信息的人员应当准确记录、复读、确认危急值结果，并立即通知相关医师。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "check": "critical_item_unaddressed",
+        "item": "血红蛋白",
+        "diagnosis_keywords": [
+          "贫血"
+        ]
+      },
+      "suggestion_template": "血红蛋白危急值（{value} {unit}）无病程处置记录，且诊断未体现相关情况，请核查。"
+    },
+    {
+      "id": "R-LAB-03",
+      "name": "检验条目缺报告时间",
+      "type": "lab_logic",
+      "severity": "MEDIUM",
+      "channel": "integrity",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第二十九条",
+        "quote": "第二十九条　辅助检查报告单是指患者住院期间所做各项检验、检查结果的记录。内容包括患者姓名、性别、年龄、住院病历号（或病案号）、检查项目、检查结果、报告日期、报告人员签名或者印章等。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "check": "report_time_present"
+      },
+      "suggestion_template": "检验条目“{item}”缺报告时间，请补全。"
+    },
+    {
+      "id": "C-TIME-01",
+      "name": "出院时间早于手术时间",
+      "type": "timeline_logic",
+      "severity": "CRITICAL",
+      "channel": "integrity",
+      "basis": {
+        "document": "住院病案首页数据填写质量规范（暂行）",
+        "document_no": "国卫办医发〔2016〕24号",
+        "clause": "第八条",
+        "quote": "第八条 入院时间是指患者实际入病房的接诊时间；出院时间是指患者治疗结束或终止治疗离开病房的时间，其中死亡患者是指其死亡时间；记录时间应当精确到分钟。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "check": "discharge_after_surgery"
+      },
+      "suggestion_template": "出院时间（{discharge}）早于手术开始时间（{surgery}），时间轴矛盾，请核对。"
+    },
+    {
+      "id": "R-TL-04",
+      "name": "手术开始时间早于入院时间",
+      "type": "timeline_logic",
+      "severity": "CRITICAL",
+      "channel": "integrity",
+      "basis": {
+        "document": "住院病案首页数据填写质量规范（暂行）",
+        "document_no": "国卫办医发〔2016〕24号",
+        "clause": "第八条",
+        "quote": "第八条 入院时间是指患者实际入病房的接诊时间；出院时间是指患者治疗结束或终止治疗离开病房的时间，其中死亡患者是指其死亡时间；记录时间应当精确到分钟。",
+        "status": "已核对"
+      },
+      "only_if": {
+        "any_keyword": [
+          "手术记录"
+        ]
+      },
+      "params": {
+        "check": "surgery_after_admission"
+      },
+      "suggestion_template": "手术开始时间（{surgery}）早于入院时间（{admission}），时间轴矛盾，请核对。"
+    },
+    {
+      "id": "R-TL-05",
+      "name": "术前讨论晚于手术开始",
+      "type": "timeline_logic",
+      "severity": "HIGH",
+      "channel": "integrity",
+      "basis": {
+        "document": "医疗质量安全核心制度要点",
+        "document_no": "国卫医发〔2018〕8号",
+        "clause": "八-3",
+        "quote": "3.术前讨论完成后，方可开具手术医嘱，签署手术知情同意书。",
+        "status": "已核对"
+      },
+      "only_if": {
+        "any_keyword": [
+          "手术记录"
+        ]
+      },
+      "params": {
+        "check": "preop_before_surgery"
+      },
+      "suggestion_template": "术前讨论时间（{preop}）晚于手术开始时间（{surgery}），术前讨论应先于手术，请核对。"
+    },
+    {
+      "id": "R-TL-06",
+      "name": "首次病程记录早于入院时间",
+      "type": "timeline_logic",
+      "severity": "HIGH",
+      "channel": "integrity",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第二十二条",
+        "quote": "第二十二条　病程记录是指继入院记录之后，对患者病情和诊疗过程所进行的连续性记录。内容包括患者的病情变化情况、重要的辅助检查结果及临床意义、上级医师查房意见、会诊意见、医师分析讨论意见、所采取的诊疗措施及效果、医嘱更改及理由、向患者及其近亲属告知的重要事项等。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "check": "first_course_after_admission"
+      },
+      "suggestion_template": "首次病程记录时间（{first_course}）早于入院时间（{admission}），时间轴矛盾，请核对。"
+    },
+    {
+      "id": "R-TL-07",
+      "name": "入院记录记录时间早于入院时间",
+      "type": "timeline_logic",
+      "severity": "MEDIUM",
+      "channel": "integrity",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第十七条",
+        "quote": "第十七条  入院记录是指患者入院后，由经治医师通过问诊、查体、辅助检查获得有关资料，并对这些资料归纳分析书写而成的记录。可分为入院记录、再次或多次入院记录、24小时内入出院记录、24小时内入院死亡记录。\n\n入院记录、再次或多次入院记录应当于患者入院后24小时内完成；24小时内入出院记录应当于患者出院后24小时内完成，24小时内入院死亡记录应当于患者死亡后24小时内完成。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "check": "record_time_after_admission"
+      },
+      "suggestion_template": "入院记录记录时间（{record_time}）早于入院时间（{admission}），时间轴矛盾，请核对。"
+    },
+    {
+      "id": "R-TL-08",
+      "name": "危急值处置记录早于检验报告时间",
+      "type": "timeline_logic",
+      "severity": "MEDIUM",
+      "channel": "integrity",
+      "basis": {
+        "document": "医疗质量安全核心制度要点",
+        "document_no": "国卫医发〔2018〕8号",
+        "clause": "十四-1",
+        "quote": "1.医疗机构应当分别建立住院和门急诊患者危急值报告具体管理流程和记录规范，确保危急值信息准确，传递及时，信息传递各环节无缝衔接且可追溯。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "check": "critical_handling_after_report"
+      },
+      "suggestion_template": "危急值处置时间（{handling}）早于检验报告时间（{report}），时间轴矛盾，请核对。"
+    }
+  ]
+}

@@ -1,10 +1,10 @@
-"""质控规则引擎骨架。
+"""质控规则引擎。
 
-- 规则 JSON 化（schema 见 plan/04 §3），引擎按 check_type 分派到确定性校验函数；
+- 规则 JSON 化（schema 见 plan/04 §3），引擎按 check_type 分派到确定性校验函数
+  （M3 全部落地，见 checks.py：required_field/timeliness/cross_consistency/
+  medication_logic/lab_logic/signature_format/timeline_logic）；
 - only_if 关键词门控对全部 check_type 生效（防跨类目误查）；
 - 无依据（basis）的规则拒绝加载——"无出处的规则不得落库"。
-
-检查函数本体在 M3 实现（对照 plan/04 §7 缺陷 ID 表）。
 """
 
 import json
@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Callable, Dict, List, Optional
 
 from ..models import RecordCard
+from .checks import RULE_DISPATCH
 from .finding import Basis, Finding, Severity
 
 __all__ = ["CHECK_TYPES", "RuleError", "Rule", "RuleEngine"]
@@ -90,7 +91,7 @@ class RuleEngine:
 
     def __init__(self, rules: Optional[List[Rule]] = None) -> None:
         self.rules: List[Rule] = list(rules or [])
-        self._dispatch: Dict[str, Callable[[Rule, RecordCard, dict], List[Finding]]] = {}
+        self._dispatch: Dict[str, Callable[[Rule, RecordCard, dict], List[Finding]]] = dict(RULE_DISPATCH)
 
     @classmethod
     def load(cls, rules_dir: Path) -> "RuleEngine":
@@ -105,7 +106,8 @@ class RuleEngine:
         return cls(rules)
 
     def check(self, card: RecordCard, part_texts: Optional[Dict[str, str]] = None) -> List[Finding]:
-        """对参数卡执行全部规则。part_texts：部件名 → 原文，供门控与摘录回验。"""
+        """对参数卡执行全部规则。part_texts：部件名 → 原文，供门控、
+        required_field 之外的部件级判定与摘录定位。"""
         texts = part_texts or {}
         findings: List[Finding] = []
         for rule in self.rules:
@@ -113,9 +115,10 @@ class RuleEngine:
                 continue
             handler = self._dispatch.get(rule.type)
             if handler is None:
-                # 检查函数本体 M3 实现；此处显式暴露而非静默吞掉
+                # CHECK_TYPES 之外的类型在加载期已被 Rule.from_dict 拒绝；此分支
+                # 只兜底"注册表缺项"的编程错误，显式暴露而非静默吞掉
                 raise NotImplementedError(
-                    "check_type=%r 的检查函数尚未实现（M3）" % rule.type
+                    "check_type=%r 的检查函数尚未注册" % rule.type
                 )
             findings.extend(handler(rule, card, texts))
         return findings

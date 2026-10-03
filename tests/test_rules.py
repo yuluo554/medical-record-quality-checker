@@ -60,11 +60,19 @@ def test_engine_gate_blocks_rule():
     """only_if 门控：关键词不出现则规则不启用（对全部 check_type 生效）。"""
     engine = RuleEngine(rules=[Rule.from_dict(_rule_dict())])
     card = RecordCard()
-    # 部件原文无"出院记录"关键词 → 门控拦截，不会触发 check_type 分派的 NotImplementedError
+    # 部件原文无"出院记录"关键词 → 门控拦截，不产出结论
     assert engine.check(card, part_texts={"手术记录": "手术经过顺利"}) == []
-    # 关键词出现（部件名与原文含"出院记录"）→ 进入分派 → 检查函数未实现（M3），显式暴露
-    with pytest.raises(NotImplementedError, match="M3"):
-        engine.check(card, part_texts={"出院记录": "出院记录：患者于 2026-03-02 治愈出院。"})
+    # 关键词出现 → 进入分派执行检查（M3 起七类检查函数全部注册，不再 NotImplementedError）
+    findings = engine.check(card, part_texts={"出院记录": "出院记录：患者于 2026-03-02 治愈出院。"})
+    assert len(findings) == 1
+    assert findings[0].rule_id == "C-DIAG-01"
+
+
+def test_engine_dispatch_covers_all_check_types():
+    """七类 check_type 全部注册检查函数（M3 完成，未知类型仍显式暴露）。"""
+    from mrqc.rules import CHECK_TYPES
+    engine = RuleEngine()
+    assert set(engine._dispatch) == set(CHECK_TYPES)
 
 
 def test_engine_no_rules_no_findings():

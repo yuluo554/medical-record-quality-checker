@@ -31,7 +31,7 @@ def _not_implemented(message: str) -> int:
 
 
 def _cmd_demo(args: argparse.Namespace) -> int:
-    from .knowledge import knowledge_status
+    from .knowledge import knowledge_dir, knowledge_status
     from .llm import llm_available
     from .models import FieldValue, PatientInfo, RecordCard
     from .parsers import registered_parts
@@ -44,34 +44,37 @@ def _cmd_demo(args: argparse.Namespace) -> int:
             department=FieldValue(value="普通外科"),
         )
     )
+    engine = RuleEngine.load(knowledge_dir() / "rules")  # M3 起从知识库加载
 
     def node_parse(ctx):
         ctx["card"] = card  # M2 起替换为真实解析
 
     def node_check(ctx):
-        engine = RuleEngine()  # M3 起从 data/knowledge/rules 加载
         ctx["findings"] = engine.check(ctx["card"])
 
     pipe = Pipeline(name="demo").add_node("解析", node_parse).add_node("质控", node_check)
-    pipe.run()
+    ctx = pipe.run()
     if not pipe.success:
         print("[错误] 流水线失败：%s" % [r.error for r in pipe.results if not r.ok])
         return 1
 
+    findings = ctx.get("findings", [])
     print("mrqc %s —— 出院病历内涵质控智能审核系统（骨架自检）" % __version__)
     print()
     print("架构状态：")
     print("  [ok] 病历参数卡 schema（统一中间表示，M0 契约）")
-    print("  [ok] 规则引擎骨架（type 分派 + only_if 门控；无依据规则拒绝加载）")
+    print("  [ok] 规则引擎（type 分派 + only_if 门控；无依据规则拒绝加载）")
     print("  [ok] 流水线编排（节点注册/耗时记录/失败即停）")
     print("  [ok] 解析器注册表：已注册 %d 个部件解析器（规则优先，证据逐字摘录）" % len(registered_parts()))
     ks = knowledge_status()
-    print("  [--] 知识库三层：raw=%d 份 / blocks=%d 块 / rules=%d 条（M1/M3）" % (ks["raw"], ks["blocks"], ks["rules"]))
+    print("  [ok] 知识库三层：raw=%d 份 / blocks=%d 块 / rules=%d 条（7 类 check_type 全注册）"
+          % (ks["raw"], ks["blocks"], ks["rules"]))
     print("  [--] LLM 兜底：%s（M4；未配置时自动走纯规则通路）" % ("已配置" if llm_available() else "未配置"))
     print("  [--] 报告导出 / Web 面板：M5")
     print()
-    print("演示运行：解析 → 质控（0 条规则 → 0 条结论），流水线节点耗时：")
-    for name, seconds in pipe.run()[CTX_TIMINGS].items():
+    print("演示运行：解析 → 质控（%d 条规则 → %d 条结论），流水线节点耗时："
+          % (len(engine.rules), len(findings)))
+    for name, seconds in ctx[CTX_TIMINGS].items():
         print("  %-4s %.4fs" % (name, seconds))
     print()
     print("路线图：")
@@ -95,15 +98,23 @@ def _cmd_parse(args: argparse.Namespace) -> int:
 
 def _cmd_check(args: argparse.Namespace) -> int:
     from .knowledge import knowledge_dir
-    from .parsers import parse_record_dir
+    from .parsers import load_part_texts, parse_texts
     from .rules import RuleEngine
 
-    card = parse_record_dir(Path(args.input))
+    part_texts, warnings = load_part_texts(Path(args.input))
+    card = parse_texts(part_texts)
+    card.parse_warnings[:0] = warnings  # 目录级告警排前（与 parse_record_dir 同口径）
     engine = RuleEngine.load(knowledge_dir() / "rules")
-    findings = engine.check(card)
+    findings = engine.check(card, part_texts=part_texts)
     print(json.dumps([f.to_dict() for f in findings], ensure_ascii=False, indent=2))
     if not engine.rules:
         print("[提示] 规则库为空（M1/M3 填充 data/knowledge/rules/）", file=sys.stderr)
+    non_pass = [f for f in findings if f.status != "pass"]
+    print("[结论] 共 %d 条规则参评：%d 条结论非 pass（fail=%d / need_confirm=%d）"
+          % (len(engine.rules), len(non_pass),
+             sum(1 for f in non_pass if f.status == "fail"),
+             sum(1 for f in non_pass if f.status == "need_confirm")),
+          file=sys.stderr)
     return 0
 
 

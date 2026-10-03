@@ -1,0 +1,265 @@
+{
+  "channel": "formal",
+  "description": "M3 规则表（formal通道）；schema 见 plan/04 §3，由 tools/build_knowledge.py 生成",
+  "rules": [
+    {
+      "id": "F-REQ-01",
+      "name": "入院记录缺主诉",
+      "type": "required_field",
+      "severity": "HIGH",
+      "channel": "formal",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第十八条（二）",
+        "quote": "（二）主诉是指促使患者就诊的主要症状（或体征）及持续时间。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "part": "入院记录",
+        "block": "主诉"
+      },
+      "suggestion_template": "入院记录缺少主诉，请按规范补写主诉（主要症状/体征及持续时间）。"
+    },
+    {
+      "id": "R-REQ-02",
+      "name": "入院记录缺现病史",
+      "type": "required_field",
+      "severity": "MEDIUM",
+      "channel": "formal",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第十八条（三）",
+        "quote": "（三）现病史是指患者本次疾病的发生、演变、诊疗等方面的详细情况，应当按时间顺序书写。内容包括发病情况、主要症状特点及其发展变化情况、伴随症状、发病后诊疗经过及结果、睡眠和饮食等一般情况的变化，以及与鉴别诊断有关的阳性或阴性资料等。\n\n1.发病情况：记录发病的时间、地点、起病缓急、前驱症状、可能的原因或诱因。\n\n2.主要症状特点及其发展变化情况：按发生的先后顺序描述主要症状的部位、性质、持续时间、程度、缓解或加剧因素，以及演变发展情况。\n\n3.伴随症状：记录伴随症状，描述伴随症状与主要症状之间的相互关系。\n\n4.发病以来诊治经过及结果：记录患者发病后到入院前，在院内、外接受检查与治疗的详细经过及效果。对患者提供的药名、诊断和手术名称需加引号（“”）以示区别。\n\n5.发病以来一般情况：简要记录患者发病后的精神状态、睡眠、食欲、大小便、体重等情况。\n\n与本次疾病虽无紧密关系、但仍需治疗的其他疾病情况，可在现病史后另起一段予以记录。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "part": "入院记录",
+        "block": "现病史"
+      },
+      "suggestion_template": "入院记录缺少现病史，请按规范补写。"
+    },
+    {
+      "id": "R-REQ-03",
+      "name": "入院记录缺入院诊断",
+      "type": "required_field",
+      "severity": "HIGH",
+      "channel": "formal",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第十八条（九）",
+        "quote": "（九）初步诊断是指经治医师根据患者入院时情况，综合分析所作出的诊断。如初步诊断为多项时，应当主次分明。对待查病例应列出可能性较大的诊断。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "part": "入院记录",
+        "block": "入院诊断"
+      },
+      "suggestion_template": "入院记录缺少入院诊断（初步诊断），请补写并做到主次分明。"
+    },
+    {
+      "id": "R-REQ-04",
+      "name": "出院记录缺出院诊断",
+      "type": "required_field",
+      "severity": "HIGH",
+      "channel": "formal",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第十八条（二十）",
+        "quote": "（二十）出院记录是指经治医师对患者此次住院期间诊疗情况的总结，应当在患者出院后24小时内完成。内容主要包括入院日期、出院日期、入院情况、入院诊断、诊疗经过、出院诊断、出院情况、出院医嘱、医师签名等。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "part": "出院记录",
+        "block": "出院诊断"
+      },
+      "suggestion_template": "出院记录缺少出院诊断，请补写。"
+    },
+    {
+      "id": "R-REQ-05",
+      "name": "出院记录缺诊疗经过/出院情况/出院医嘱",
+      "type": "required_field",
+      "severity": "MEDIUM",
+      "channel": "formal",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第十八条（二十）",
+        "quote": "（二十）出院记录是指经治医师对患者此次住院期间诊疗情况的总结，应当在患者出院后24小时内完成。内容主要包括入院日期、出院日期、入院情况、入院诊断、诊疗经过、出院诊断、出院情况、出院医嘱、医师签名等。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "part": "出院记录",
+        "blocks": [
+          "诊疗经过",
+          "出院情况",
+          "出院医嘱"
+        ]
+      },
+      "suggestion_template": "出院记录缺少必备段落：{missing}，请按规范补齐。"
+    },
+    {
+      "id": "R-REQ-06",
+      "name": "手术病种缺手术记录",
+      "type": "required_field",
+      "severity": "HIGH",
+      "channel": "formal",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第十八条（十五）",
+        "quote": "（十五）手术记录是指手术者书写的反映手术一般情况、手术经过、术中发现及处理等情况的特殊记录，应当在术后24小时内完成。特殊情况下由第一助手书写时，应有手术者签名。手术记录应当另页书写，内容包括一般项目（患者姓名、性别、科别、病房、床位号、住院病历号或病案号）、手术日期、术前诊断、术中诊断、手术名称、手术者及助手姓名、麻醉方法、手术经过、术中出现的情况及处理等。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "require": "surgery_record"
+      },
+      "suggestion_template": "出院诊疗经过提及手术但病历中无手术记录部件，请补写手术记录。"
+    },
+    {
+      "id": "F-TIME-01",
+      "name": "入院记录未在入院后24小时内完成",
+      "type": "timeliness",
+      "severity": "HIGH",
+      "channel": "formal",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第十七条",
+        "quote": "第十七条  入院记录是指患者入院后，由经治医师通过问诊、查体、辅助检查获得有关资料，并对这些资料归纳分析书写而成的记录。可分为入院记录、再次或多次入院记录、24小时内入出院记录、24小时内入院死亡记录。\n\n入院记录、再次或多次入院记录应当于患者入院后24小时内完成；24小时内入出院记录应当于患者出院后24小时内完成，24小时内入院死亡记录应当于患者死亡后24小时内完成。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "event": "入院记录完成",
+        "anchor_event": "入院",
+        "limit_hours": 24
+      },
+      "suggestion_template": "入院记录完成于入院后 {actual_hours} 小时，超出 24 小时时限，请核查书写时效。"
+    },
+    {
+      "id": "F-TIME-02",
+      "name": "首次病程记录未在入院后8小时内完成",
+      "type": "timeliness",
+      "severity": "HIGH",
+      "channel": "formal",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第二十二条（一）",
+        "quote": "（一）首次病程记录是指患者入院后由经治医师或值班医师书写的第一次病程记录，应当在患者入院8小时内完成。首次病程记录的内容包括病例特点、拟诊讨论(诊断依据及鉴别诊断)、诊疗计划等。\n\n1.病例特点：应当在对病史、体格检查和辅助检查进行全面分析、归纳和整理后写出本病例特征,包括阳性发现和具有鉴别诊断意义的阴性症状和体征等。\n\n2.拟诊讨论(诊断依据及鉴别诊断): 根据病例特点，提出初步诊断和诊断依据；对诊断不明的写出鉴别诊断并进行分析；并对下一步诊治措施进行分析。\n\n3.诊疗计划：提出具体的检查及治疗措施安排。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "event": "首次病程记录",
+        "anchor_event": "入院",
+        "limit_hours": 8
+      },
+      "suggestion_template": "首次病程记录完成于入院后 {actual_hours} 小时，超出 8 小时时限，请核查书写时效。"
+    },
+    {
+      "id": "F-TIME-03",
+      "name": "术后首次病程记录未即时完成",
+      "type": "timeliness",
+      "severity": "NEED_CONFIRM",
+      "channel": "formal",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第十八条（十八）",
+        "quote": "（十八）术后首次病程记录是指参加手术的医师在患者术后即时完成的病程记录。内容包括手术时间、术中诊断、麻醉方式、手术方式、手术简要经过、术后处理措施、术后应当特别注意观察的事项等。",
+        "status": "待核对"
+      },
+      "only_if": {
+        "any_keyword": [
+          "术后首次病程记录"
+        ]
+      },
+      "params": {
+        "event": "术后首次病程",
+        "anchor": "surgery_end",
+        "limit_hours": 2
+      },
+      "suggestion_template": "术后首次病程记录完成于手术结束后 {actual_hours} 小时；规范要求“即时完成”，数值化时限（当前阈值 2 小时）待核对，请人工确认。"
+    },
+    {
+      "id": "F-SIGN-01",
+      "name": "缺术者或上级审签签名",
+      "type": "signature_format",
+      "severity": "HIGH",
+      "channel": "formal",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第八条",
+        "quote": "第八条  病历应当按照规定的内容书写，并由相应医务人员签名。\n\n实习医务人员、试用期医务人员书写的病历，应当经过本医疗机构注册的医务人员审阅、修改并签名。\n\n进修医务人员由医疗机构根据其胜任本专业工作实际情况认定后书写病历。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "check": "required_signatures",
+        "items": [
+          {
+            "role": "术者",
+            "when_surgery": true
+          },
+          {
+            "role": "主治医师",
+            "require_part": "出院记录"
+          }
+        ]
+      },
+      "suggestion_template": "缺少{roles}签名，请按规定由相应医务人员签名。"
+    },
+    {
+      "id": "R-SIGN-02",
+      "name": "签名缺日期",
+      "type": "signature_format",
+      "severity": "LOW",
+      "channel": "formal",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第九条",
+        "quote": "第九条　病历书写一律使用阿拉伯数字书写日期和时间，采用24小时制记录。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "check": "signature_date_present"
+      },
+      "suggestion_template": "{roles}签名未注明日期，请补签日期（24 小时制）。"
+    },
+    {
+      "id": "R-SIGN-03",
+      "name": "入院记录缺住院医师签名",
+      "type": "signature_format",
+      "severity": "MEDIUM",
+      "channel": "formal",
+      "basis": {
+        "document": "病历书写基本规范",
+        "document_no": "卫医政发〔2010〕11号",
+        "clause": "第十八条（十）",
+        "quote": "（十）书写入院记录的医师签名。",
+        "status": "已核对"
+      },
+      "only_if": {},
+      "params": {
+        "check": "role_present",
+        "role": "住院医师",
+        "require_part": "入院记录"
+      },
+      "suggestion_template": "入院记录缺住院医师（记录者）签名，请补签。"
+    }
+  ]
+}
