@@ -18,6 +18,10 @@ jobs:
     # 双 OS 维度：knowledge_dir() 的包内定位是跨 OS 最敏感的代码
     # （site-packages 布局 / 路径分隔符），此前只在 linux 跑过。
     runs-on: ${{ matrix.os }}
+    # Windows runner 默认控制台编码是 cp1252，CLI 中文输出会 UnicodeEncodeError；
+    # 强制 UTF-8 输出（与 README「控制台中文加 -X utf8」一致）。
+    env:
+      PYTHONIOENCODING: utf-8
     strategy:
       fail-fast: false
       matrix:
@@ -33,6 +37,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev,web,report]"
+          pip install build  # 打包门禁步骤需要
       - name: Run tests
         run: pytest
       - name: CLI smoke
@@ -40,17 +45,5 @@ jobs:
       - name: Packaging gate (non-editable wheel; knowledge base must load)
         # P0 回归守门：装成 wheel（不带 -e）后在**仓外**目录跑 check，必须 33 条
         # finding（改前 0 条且 rc=0——静默退化成永远说「通过」的空壳）。
-        shell: bash
-        run: |
-          set -euo pipefail
-          python -m pip install --upgrade build
-          python -m build --wheel --outdir "$RUNNER_TEMP/dist-ci"
-          python -m venv "$RUNNER_TEMP/v-wheel-ci"
-          VPY="$RUNNER_TEMP/v-wheel-ci/bin/python"
-          [ -x "$VPY" ] || VPY="$RUNNER_TEMP/v-wheel-ci/Scripts/python"
-          "$VPY" -m pip install "$RUNNER_TEMP"/dist-ci/*.whl
-          ROOT="$PWD"
-          cd "$RUNNER_TEMP"
-          "$VPY" -c "from mrqc.knowledge import knowledge_status; s=knowledge_status(); print(s); assert s['rules']==33 and s['blocks']==42"
-          "$VPY" -m mrqc.cli check --input "$ROOT/data/samples/appendicitis_001" > c.json 2> c.err || { cat c.err; exit 1; }
-          "$VPY" -c "import json;d=json.load(open('c.json',encoding='utf-8'));print('findings',len(d));assert len(d)==33"
+        # 全部路径交给脚本内的 Python 处理，规避 Windows/Git-Bash 的 MSYS 路径改写。
+        run: python tools/ci_packaging_gate.py

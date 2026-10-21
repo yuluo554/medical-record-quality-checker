@@ -8,7 +8,6 @@
 依赖 pyyaml（dev extra）。
 """
 
-import re
 from pathlib import Path
 
 import pytest
@@ -54,12 +53,18 @@ def test_ci_runs_on_matrix_os(ci_doc):
 
 
 def test_ci_has_non_editable_packaging_gate(ci_text):
-    """P0 回归：CI 必须有一条**非 editable**（装 wheel、仓外目录）的知识库验活步骤。"""
-    assert "mypyc" not in ci_text  # 无关噪声
-    assert re.search(r"build --wheel", ci_text), "缺 wheel 构建步骤"
+    """P0 回归：CI 必须有一条**非 editable**（装 wheel、仓外目录）的知识库验活步骤。
+
+    门禁脚本把路径处理与断言都收进 tools/ci_packaging_gate.py（跨 OS 稳健），
+    并断言它自己**不带 -e 装**、**在仓外中立目录**跑 check。
+    """
+    assert "ci_packaging_gate.py" in ci_text, "CI 缺打包门禁步骤"
+    script = (Path(__file__).resolve().parents[1] / "tools" / "ci_packaging_gate.py")
+    text = script.read_text(encoding="utf-8")
+    assert "build" in text and "--wheel" in text, "门禁脚本必须构建 wheel"
     # 装 wheel 时不得带 -e（editable 会掩盖包数据缺陷）
-    assert "pip install -e" not in ci_text.split("Packaging gate")[1], \
-        "打包门禁步骤不得用 editable 安装"
+    assert '"-e"' not in text, "打包门禁不得用 editable 安装"
+    assert "findings" in text and "33" in text, "门禁必须断言 33 条 finding"
 
 
 def test_ci_actions_pinned_v7(ci_text):

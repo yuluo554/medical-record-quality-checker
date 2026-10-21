@@ -15,6 +15,26 @@ from pathlib import Path
 
 from . import __version__
 
+
+def _force_utf8_stdio() -> None:
+    """把 stdout/stderr 切到 UTF-8（仅在其编码不是 UTF-8 时）。
+
+    Windows 默认控制台编码是 cp1252/gbk，打印中文会 UnicodeEncodeError 直接崩
+    （CI 的 windows 腿实测）。CLI 是中文输出为主，这里统一收敛到 UTF-8，避免
+    用户被迫加 `-X utf8` 才敢跑。errors="replace" 兜底：极端终端字符也不崩。
+    """
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is None:
+            continue
+        enc = (getattr(stream, "encoding", "") or "").lower()
+        if enc.replace("-", "") not in ("utf8", "utf_8"):
+            try:
+                reconfigure(encoding="utf-8", errors="replace")
+            except (ValueError, OSError):  # 流不可配置（已重定向到非常规对象）时跳过
+                pass
+
+
 _ROADMAP = [
     ("M1 数据先行", "病种模板 + 合成生成器（真值/植入缺陷） + 规范原文入库"),
     ("M2 解析层", "六部件解析器 → 病历参数卡，解析 F1 基准"),
@@ -273,6 +293,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv=None) -> int:
+    _force_utf8_stdio()
     parser = build_parser()
     args = parser.parse_args(argv)
     try:
