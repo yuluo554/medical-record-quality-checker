@@ -8,7 +8,7 @@
 
 > **免责声明**：本系统只做病历**书写质量与记录一致性**质控，**不是临床决策支持工具**，不提供任何诊断或治疗建议。内置数据全部为合成数据（患者身份虚构），不构成诊疗依据。
 
-> ✅ **状态：v0.2.0 已发布**（M0–M6 全部完成；v0.2.0 为二次迭代：知识库随包分发修复 P0、支持面收窄到 Python 3.12）。发布留档见 [plan/RELEASE-M6.md](plan/RELEASE-M6.md)，终态快照见 [plan/HANDOFF-FINAL.md](plan/HANDOFF-FINAL.md)，v0.2.0 说明见 [Releases](https://github.com/yuluo554/medical-record-quality-checker/releases/tag/v0.2.0)。
+> ✅ **状态：v0.2.0 已发布**（M0–M6 全部完成；v0.2.0 为二次迭代：知识库随包分发修复 P0、支持面收窄到 Python 3.12）。发布留档见 [plan/RELEASE-v0.2.0.md](plan/RELEASE-v0.2.0.md)（v0.2.0）与 [plan/RELEASE-M6.md](plan/RELEASE-M6.md)（v0.1.0），终态快照见 [plan/HANDOFF-FINAL.md](plan/HANDOFF-FINAL.md) §7，v0.2.0 说明见 [Releases](https://github.com/yuluo554/medical-record-quality-checker/releases/tag/v0.2.0)。
 
 ## 为什么做这个
 
