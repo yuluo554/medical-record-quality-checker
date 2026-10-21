@@ -4,7 +4,7 @@
 
 ## 1. 当前进度（M3 已完成 ✅）
 
-- **知识库三层补齐**：blocks 42 条文块（`data/knowledge/blocks/`，5 份规范各一文件）+ rules 33 条（`formal_rules.json` 12 / `integrity_rules.json` 21）。全部由 `tools/build_knowledge.py` 从 raw 原文**程序化摘取**（重跑零 diff），规则 basis 按（文号,条款）从 blocks 取同一文本；`tests/test_knowledge.py` 双向守门（引文 ⊆ raw 原文 / 规则依据 ≡ blocks 条目 / 文号与台账一致）；
+- **知识库三层补齐**：blocks 42 条文块（`data/knowledge/blocks/`，M3 二次迭代后移至 `src/mrqc/knowledge/data/blocks/`，5 份规范各一文件）+ rules 33 条（`formal_rules.json` 12 / `integrity_rules.json` 21）。全部由 `tools/build_knowledge.py` 从 raw 原文**程序化摘取**（重跑零 diff），规则 basis 按（文号,条款）从 blocks 取同一文本；`tests/test_knowledge.py` 双向守门（引文 ⊆ raw 原文 / 规则依据 ≡ blocks 条目 / 文号与台账一致）；
 - **规则库**：14 缺陷 ID 全覆盖（plan/04 §7 对账锚，未改名）；全部挂 basis（无 basis 加载即 RuleError）；7 类 check_type 全注册（`src/mrqc/rules/checks.py`，引擎 RULE_DISPATCH）；手术类规则挂 only_if ["手术记录"]、F-TIME-03 挂 ["术后首次病程记录"]，门控对真实规则生效；
 - **判定纪律落地**：数据不足一律 pass 不硬判；basis.status=待核对 → 只出 need_confirm（现仅 F-TIME-03"即时"→2h 阈值一条待核对；F-TIME-01/02 的 24h/8h 已从 11 号文原文核对升级为已核对硬判）；C-SURG-02 术者签名缺失时按约定跳过（归 F-SIGN-01）；"输血"字样因"未输血"全语料出现，用血识别走参数卡 purpose 字段不走关键词；
 - **配对集检出首版**：`mrqc/eval/detect.py`（实现入库）+ `benchmarks/detect_paired.py`（CLI 壳，含 --min-detection-rate 门槛模式预置）。**主缺陷检出率 100%（42/42 份全命中，45 条非 pass 结论 = 42 主缺陷 + 3 条 C-LAB-02 隐含 C-LAB-01）、干净对照 12 份误报 0、非预期结论 0、依据关联率 100%**；分级分布 CRITICAL 6 / HIGH 36 / NEED_CONFIRM 3；演示报告 `benchmarks/m3_detect_report.md`；
@@ -54,7 +54,7 @@
 ## 5. DoD checklist
 
 M3（已完成 ✅）：
-- [x] blocks 条文块入库（5 份规范 → 42 块 data/knowledge/blocks/，台账登记 data/README §四）
+- [x] blocks 条文块入库（5 份规范 → 42 块 data/knowledge/blocks/，M3 二次迭代后移至 src/mrqc/knowledge/data/blocks/；台账登记 data/README §四）
 - [x] rules ≥30 条全部挂 basis（33 条；14 缺陷 ID 全覆盖，文号与 raw 台账一致）
 - [x] 7 类 check_type 检查函数全部实现（dispatch 注册，不抛 NotImplementedError）
 - [x] 配对集 54 份检出首版报告（defects.json 期望对账；含分级+依据，`benchmarks/m3_detect_report.md`）

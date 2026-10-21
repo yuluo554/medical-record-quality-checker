@@ -5,16 +5,27 @@ on:
     branches: [main]
   pull_request:
 
+# 同一分支的新推送取消在跑的旧 run（不取消 main 的既有 run）
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
+
 jobs:
   test:
-    runs-on: ubuntu-latest
+    # 双 OS 维度：knowledge_dir() 的包内定位是跨 OS 最敏感的代码
+    # （site-packages 布局 / 路径分隔符），此前只在 linux 跑过。
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.10", "3.12"]
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.12"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install package with all extras
@@ -26,3 +37,20 @@ jobs:
         run: pytest
       - name: CLI smoke
         run: mrqc demo
+      - name: Packaging gate (non-editable wheel; knowledge base must load)
+        # P0 回归守门：装成 wheel（不带 -e）后在**仓外**目录跑 check，必须 33 条
+        # finding（改前 0 条且 rc=0——静默退化成永远说「通过」的空壳）。
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade build
+          python -m build --wheel --outdir "$RUNNER_TEMP/dist-ci"
+          python -m venv "$RUNNER_TEMP/v-wheel-ci"
+          VPY="$RUNNER_TEMP/v-wheel-ci/bin/python"
+          [ -x "$VPY" ] || VPY="$RUNNER_TEMP/v-wheel-ci/Scripts/python"
+          "$VPY" -m pip install "$RUNNER_TEMP"/dist-ci/*.whl
+          ROOT="$PWD"
+          cd "$RUNNER_TEMP"
+          "$VPY" -c "from mrqc.knowledge import knowledge_status; s=knowledge_status(); print(s); assert s['rules']==33 and s['blocks']==42"
+          "$VPY" -m mrqc.cli check --input "$ROOT/data/samples/appendicitis_001" > c.json 2> c.err || { cat c.err; exit 1; }
+          "$VPY" -c "import json;d=json.load(open('c.json',encoding='utf-8'));print('findings',len(d));assert len(d)==33"

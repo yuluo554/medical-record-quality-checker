@@ -1,24 +1,22 @@
 [build-system]
-requires = ["setuptools>=64"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "mrqc"
-version = "0.1.0"
+version = "0.2.0"
 description = "出院病历内涵质控智能审核系统：形式+内涵双通道质控、规范依据关联、内置可复现评测基准"
 readme = "README.md"
-requires-python = ">=3.8"
-license = { text = "MIT" }
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "yuluo554" }]
 keywords = ["medical-record", "quality-control", "clinical-nlp", "rule-engine", "healthcare"]
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "Intended Audience :: Healthcare Industry",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Medical Science Apps.",
 ]
@@ -30,7 +28,8 @@ report = ["python-docx>=0.8.11"]
 # python-multipart 是 FastAPI UploadFile 的运行期隐式依赖，缺它 uvicorn 启动即崩——
 # extras 守门测试锁定，不许移除
 web = ["fastapi>=0.100", "uvicorn>=0.20", "python-multipart>=0.0.5"]
-dev = ["pytest>=7"]
+# pyyaml 供 tests/test_ci_workflow.py 解析 ci.yml（CI 矩阵结构守门）
+dev = ["pytest>=7", "pyyaml>=6"]
 
 [project.scripts]
 mrqc = "mrqc.cli:main"
@@ -43,6 +42,15 @@ Repository = "https://github.com/yuluo554/medical-record-quality-checker"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+# M3 知识库随包分发：blocks/rules 必须在 wheel 里，否则装成 wheel 后规则库为空
+# （P0：曾因 parents[3] + 无 package-data 导致装态「0 条规则参评 → 判通过」）。
+# raw/ 原文不进 wheel（仅供源码态测试核对引文），见 MANIFEST.in 走 sdist。
+[tool.setuptools.package-data]
+"mrqc.knowledge" = ["data/blocks/*.json", "data/rules/*.json"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+# 显式指向仓内 src：避免「本机装了 editable 包 → 测试实际导入别处的包」造成假绿
+# （sdist 解包后同样成立：测试导入解包树自己的 src，而不是 site-packages 里的副本）
+pythonpath = ["src"]

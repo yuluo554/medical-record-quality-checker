@@ -49,7 +49,9 @@ def test_lazy_import_guards_present():
 def test_ci_installs_all_extras():
     ci = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
     assert '.[dev,web,report]"' in ci, "CI 必须显式安装全量 extras（防静默少跑）"
-    assert '"3.8"' in ci, "CI 必须覆盖 Python 3.8 底线（requires-python 对齐）"
+    # 断言力度不变：CI 必须覆盖 requires-python 声明的 floor。floor 已按 DEC-2=A
+    # 收窄到 3.12，故字面量随之改 3.12（矩阵形状由 test_ci_workflow.py 守门）。
+    assert '"3.12"' in ci, "CI 必须覆盖 requires-python 声明的 floor（3.12）"
 
 
 def _src_py_files():

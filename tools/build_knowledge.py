@@ -3,8 +3,8 @@
 数据派生链：条文块引文从 raw/*.txt 程序化摘取（保证逐字，杜绝转写笔误）；
 规则 basis 引文按（文号, 条款）从已建 blocks 取同一文本（单一来源）。
 重跑本脚本应零 diff（确定性抽取，无随机）。产出：
-  data/knowledge/blocks/*.json（每份规范一个文件）
-  data/knowledge/rules/formal_rules.json / integrity_rules.json
+  src/mrqc/knowledge/data/blocks/*.json（每份规范一个文件，随 wheel 分发）
+  src/mrqc/knowledge/data/rules/formal_rules.json / integrity_rules.json
 
 运行：py -X utf8 tools/build_knowledge.py
 """
@@ -15,8 +15,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "knowledge" / "raw"
-BLOCKS = ROOT / "data" / "knowledge" / "blocks"
-RULES = ROOT / "data" / "knowledge" / "rules"
+# M3 二次迭代：blocks/rules 移入包内（随 wheel 分发），raw 原文仍留仓内
+BLOCKS = ROOT / "src" / "mrqc" / "knowledge" / "data" / "blocks"
+RULES = ROOT / "src" / "mrqc" / "knowledge" / "data" / "rules"
+
+# 复核锚（失效模式 15：「什么时候核对的 / 什么时候该复核」）。
+# 入库日 2026-10-03（与 data/README §四登记一致），复核周期 annual。
+REVIEWED_AT = "2026-10-03"
+NEXT_REVIEW = "2027-10-03"
+REVIEW_INTERVAL = "annual"
 
 sys.path.insert(0, str(ROOT / "src"))
 
@@ -138,8 +145,11 @@ def build_blocks() -> dict:
             "document": document,
             "document_no": doc_no,
             "source_file": "raw/" + fname,
+            "reviewed_at": REVIEWED_AT,
+            "next_review": NEXT_REVIEW,
             "blocks": [
-                {"block_id": "%s-%s" % (prefix, clause), "clause": clause, "quote": quote}
+                {"block_id": "%s-%s" % (prefix, clause), "clause": clause, "quote": quote,
+                 "status": "已核对", "reviewed_at": REVIEWED_AT}
                 for clause, quote in items
             ],
         }
@@ -155,7 +165,9 @@ def _basis(index, doc_no, clause, status="已核对"):
     quote = index[doc_no][clause]
     document = next(d[2] for d in DOCS if d[3] == doc_no)
     return {"document": document, "document_no": doc_no, "clause": clause,
-            "quote": quote, "status": status}
+            "quote": quote, "status": status,
+            "reviewed_at": REVIEWED_AT, "next_review": NEXT_REVIEW,
+            "review_interval": REVIEW_INTERVAL}
 
 
 BW, HX, SY = "卫医政发〔2010〕11号", "国卫医发〔2018〕8号", "国卫办医发〔2016〕24号"
@@ -330,7 +342,10 @@ def build_rules(index) -> None:
     for fname, channel, items in (
             ("formal_rules.json", "formal", formal),
             ("integrity_rules.json", "integrity", integrity)):
-        payload = {"channel": channel, "description": "M3 规则表（%s通道）；schema 见 plan/04 §3，由 tools/build_knowledge.py 生成" % channel,
+        payload = {"channel": channel,
+                   "description": "M3 规则表（%s通道）；schema 见 plan/04 §3，由 tools/build_knowledge.py 生成" % channel,
+                   "reviewed_at": REVIEWED_AT,
+                   "next_review": NEXT_REVIEW,
                    "rules": items}
         out = RULES / fname
         out.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

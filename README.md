@@ -1,8 +1,14 @@
 # medical-record-quality-checker
 
+[![CI](https://github.com/yuluo554/medical-record-quality-checker/actions/workflows/ci.yml/badge.svg)](https://github.com/yuluo554/medical-record-quality-checker/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/yuluo554/medical-record-quality-checker)](https://github.com/yuluo554/medical-record-quality-checker/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 **出院病历内涵质控智能审核系统**——形式+内涵双通道质控、规范依据关联、内置可复现评测基准。规则优先，LLM 仅兜底。
 
 > **免责声明**：本系统只做病历**书写质量与记录一致性**质控，**不是临床决策支持工具**，不提供任何诊断或治疗建议。内置数据全部为合成数据（患者身份虚构），不构成诊疗依据。
+
+> ✅ **状态：v0.1.0 已发布（M0–M6 全部完成）**。发布留档见 [plan/RELEASE-M6.md](plan/RELEASE-M6.md)，终态快照见 [plan/HANDOFF-FINAL.md](plan/HANDOFF-FINAL.md)。
 
 ## 为什么做这个
 
@@ -24,7 +30,7 @@
 | 端到端流水线 `mrqc run`（解析→LLM兜底→质控→汇总→导出，五节点编排） | ✅ |
 | docx 质控报告（签署栏+免责声明+分级统计+依据关联，0 外链） | ✅ |
 | Web 面板（FastAPI 免构建内联单页，multipart 上传，0 外链断网可演示） | ✅ |
-| 脱敏审计 + 干净环境验证 + GitHub 发布 | ⬜ M6 |
+| 脱敏审计 + 干净环境验证 + GitHub 发布 | ✅ M6 |
 
 ## 架构
 
@@ -45,16 +51,18 @@ flowchart LR
 
 ## 快速开始
 
-要求：Python ≥ 3.8（Windows 建议用 `py` 启动器，控制台跑中文输出加 `-X utf8`）。
+要求：Python ≥ 3.12（Windows 建议用 `py` 启动器，控制台跑中文输出加 `-X utf8`）。
 
 ```bash
 git clone https://github.com/yuluo554/medical-record-quality-checker.git
 cd medical-record-quality-checker
-python -m pip install --upgrade pip  # 旧版 pip（Python 3.8 自带 20.x）不支持 pyproject-only editable 安装，先升级
+python -m pip install --upgrade pip  # 先升级 pip（新版支持 pyproject-only editable 安装）
 pip install -e ".[dev,web,report]"   # 核心零第三方依赖；extras 为交付形态组件
-pytest                               # 全离线测试（含 extras 守门）
+pytest                               # 全离线测试（含 extras 守门）：190 项
 mrqc demo                            # 架构自检演示
 ```
+
+> **安装形态说明**：`pip install mrqc` / 装 wheel 即可运行（知识库 blocks/rules 随 wheel 分发，非 editable 安装同样可用）。sdist（`.tar.gz`）额外自带规范原文、生成数据集与测试，**仅供源码阅读与自测**（解包后 `pytest` 应为全绿）；运行请用 wheel 或 editable 安装。两者内容**不同**是刻意的：wheel 只要运行必需件，sdist 要「clone 下来能自测」。
 
 命令一览（未实现项 fail-fast 并提示实现去向）：
 
@@ -87,12 +95,13 @@ py -X utf8 -m mrqc.web --port 8000     # Web 面板（浏览器打开 http://127
 
 ```
 ├── src/mrqc/          # 解析 / 参数卡 / 规则引擎 / 知识库 / LLM 兜底 / 编排 / 报告 / Web
-├── data/              # templates 病种模板 / samples 合成病历+真值 / paired 配对评测集 / knowledge 规范库
+│   └── knowledge/data/  # 包内知识库：blocks 条文块 / rules 规则表（随 wheel 分发）
+├── data/              # templates 病种模板 / samples 合成病历+真值 / paired 配对评测集 / knowledge/raw 规范原文
 ├── benchmarks/        # 解析 F1 与端到端检出基准 + 报告样例（M2/M4/M5）
 ├── docs/              # 演示视频脚本等交付材料
 ├── tests/             # 全离线测试（含 extras 守门测试）
 ├── plan/              # 计划文档 00–06、决策记录、跨会话 HANDOFF
-└── .github/workflows/ # CI：Python 3.8/3.10/3.12，显式安装全量 extras
+└── .github/workflows/ # CI：{ubuntu, windows} × Python 3.12，显式安装全量 extras + 非 editable 打包门禁
 ```
 
 ## 路线图
@@ -105,12 +114,12 @@ py -X utf8 -m mrqc.web --port 8000     # Web 面板（浏览器打开 http://127
 | M3 知识与规则 | 三层知识库 + 双通道规则引擎（≥30 条，全部挂依据） | ✅ |
 | M4 LLM 兜底+基准达标 | LLM 客户端（降级/防幻觉）+ F1 ≥ 0.95、干净集误报 0、指标入 README | ✅ |
 | M5 编排与交付 | `mrqc run` + docx 报告 + Web 面板（0 外链断网可演示） | ✅ |
-| M6 发布 | 脱敏审计 + 干净环境验证 + GitHub 发布 | ⬜ |
+| M6 发布 | 脱敏审计 + 干净环境验证 + GitHub 发布 | ✅ |
 
 ## 限制
 
 - 解析以**文本格式病历部件**为输入；打印体扫描件（OCR）为远期加分项，当前不支持；
-- 知识库规则依据 5 份公开卫健委文件，条文数值逐条核对后入库（`status` 字段标注）；未核对的条目只产出"待人工确认"结论；
+- 知识库规则依据 5 份公开卫健委文件，条文数值逐条核对后入库——**规则层**用 `basis.status`（已核对/待核对）标注，**条文块层**用 `blocks[*].status` 标注，两层各挂 `reviewed_at` / `next_review` 复核锚；未核对的条目只产出"待人工确认"结论；
 - 合成病历使用常见病种模板（社区获得性肺炎、急性阑尾炎、胆囊结石），疾病-用药-检验映射为公开临床常识口径，**不能替代真实临床数据验证**；
 - LLM 兜底需用户自行配置 OpenAI 兼容端点（环境变量注入，密钥不入库），未配置时系统以纯规则通路运行；已配置时也只对**低置信度字段**做补抽，且逐条过防幻觉回验（摘录必须逐字来自部件原文、数值超合法性范围即丢弃），LLM 失败（超时/重试耗尽/输出损坏）自动降级，数值结论永远来自确定性规则。
 

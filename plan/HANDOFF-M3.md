@@ -12,8 +12,8 @@
 
 ## 2. M3 待办（知识与规则，DoD 见 plan/05 §5）
 
-1. **blocks 入库** `data/knowledge/blocks/*.json`：从 `data/knowledge/raw/` 5 份规范摘条文块（block_id/文号/条号/原文/出处），台账登记进 data/README.md；查证优先于自证，查不到的时限值标"待核对"；
-2. **rules 入库** `data/knowledge/rules/*.json`：规则 ≥30 条且**全部挂 basis**（schema plan/04 §3；无 basis 加载即 RuleError——特性不是 bug）；对照 plan/04 §7 缺陷 ID 表 14 个 ID 全部有对应规则，ID 不得改名；
+1. **blocks 入库** `data/knowledge/blocks/*.json`（**M3 二次迭代后移至 `src/mrqc/knowledge/data/blocks/`，随 wheel 分发**）：从 `data/knowledge/raw/` 5 份规范摘条文块（block_id/文号/条号/原文/出处），台账登记进 data/README.md；查证优先于自证，查不到的时限值标"待核对"；
+2. **rules 入库** `data/knowledge/rules/*.json`（**同上已移至包内**）：规则 ≥30 条且**全部挂 basis**（schema plan/04 §3；无 basis 加载即 RuleError——特性不是 bug）；对照 plan/04 §7 缺陷 ID 表 14 个 ID 全部有对应规则，ID 不得改名；
 3. **7 类 check_type 检查函数**：`RuleEngine._dispatch` 注册 required_field / timeliness / cross_consistency / medication_logic / lab_logic / signature_format / timeline_logic（现在调未实现 type 直接 NotImplementedError）；
 4. **配对集检出首版报告**：跑 data/paired 54 份（defects.json 是评测期望：expect_status/also_expect），产出"结论清单（含分级+依据）"演示物；干净对照 ctrl_* 误报应为 0（M4 门槛，M3 先看数）；
 5. **依据关联**：Finding.basis 来自规则 JSON；结论证据用参数卡 Evidence（已是逐字子串）；"待核对"依据只能出 NEED_CONFIRM；
@@ -59,7 +59,7 @@ M2（已完成 ✅）：
 - [x] plan/00、05、06 回写 ✅；写 HANDOFF-M3；本地提交
 
 M3（执行时逐项打勾，未达成写偏差说明）：
-- [ ] blocks 条文块入库（5 份规范 → data/knowledge/blocks/，台账登记）
+- [ ] blocks 条文块入库（5 份规范 → data/knowledge/blocks/，M3 二次迭代后移至 src/mrqc/knowledge/data/blocks/；台账登记）
 - [ ] rules ≥30 条全部挂 basis（14 缺陷 ID 全覆盖，文号与 raw 台账一致）
 - [ ] 7 类 check_type 检查函数全部实现（dispatch 注册，不抛 NotImplementedError）
 - [ ] 配对集 54 份检出首版报告（defects.json 期望对账；含分级+依据）

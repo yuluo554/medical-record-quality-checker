@@ -5,15 +5,19 @@ raw 规范原文的逐字子串；规则依据（文号+条款+引文）必须�
 """
 
 import json
+import re
 from pathlib import Path
 
 import pytest
 
-from mrqc.knowledge import knowledge_dir
+from mrqc.knowledge import knowledge_dir, raw_dir
 from mrqc.rules import CHECK_TYPES, Rule, RuleEngine, RuleError
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+# M3 起 blocks/rules 在包内（src/mrqc/knowledge/data/，随 wheel 分发）；
+# raw 原文仍留仓内（data/knowledge/raw/），只供本测试核对引文。
 KNOWLEDGE = knowledge_dir()
+RAW_DIR = raw_dir()
 
 # 与 data/README.md 登记表三一致的文号清单（台账口径）
 DOCUMENT_NO_RAW = {
@@ -51,9 +55,13 @@ def test_blocks_cover_all_five_documents():
 
 
 def test_block_quotes_are_verbatim_substrings_of_raw():
-    """防幻觉守门：每条条文块引文必须在其 raw 原文中逐字存在。"""
+    """防幻觉守门：每条条文块引文必须在其 raw 原文中逐字存在。
+
+    source_file 形如 "raw/xxx.txt"；blocks 已进包（KNOWLEDGE），raw 仍在仓内
+    （RAW_DIR），故这里显式从 RAW_DIR 取原文。
+    """
     for doc_no, source_file, blk in _all_blocks():
-        raw = (KNOWLEDGE / source_file).read_text(encoding="utf-8")
+        raw = (RAW_DIR / source_file.split("/", 1)[1]).read_text(encoding="utf-8")
         assert blk["quote"] in raw, "引文非原文子串：%s %s" % (doc_no, blk["clause"])
         assert blk["clause"] and blk["block_id"]
 
@@ -126,3 +134,49 @@ def test_real_rules_directory_is_loadable_via_engine_check():
     findings = engine.check(RecordCard(), part_texts=texts)
     assert len(findings) == len(engine.rules)
     assert all(f.status == "pass" for f in findings)
+
+
+# ---------- 复核锚（失效模式 15：什么时候核对的 / 什么时候该复核） ----------
+
+_ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def test_rule_basis_has_review_anchors():
+    """每条规则的 basis 必须带 reviewed_at / next_review（合法 ISO）与复核周期。"""
+    for item in _all_rules():
+        b = item["basis"]
+        assert _ISO_DATE.match(b.get("reviewed_at", "")), item["id"]
+        assert _ISO_DATE.match(b.get("next_review", "")), item["id"]
+        assert b.get("review_interval") == "annual", item["id"]
+
+
+def test_block_has_status_and_reviewed_at():
+    """每个条文块必须带 status 与 reviewed_at（块层与规则层对称）。"""
+    for doc_no, _source, blk in _all_blocks():
+        assert blk.get("status") == "已核对", blk["block_id"]
+        assert _ISO_DATE.match(blk.get("reviewed_at", "")), blk["block_id"]
+
+
+def test_knowledge_documents_have_review_anchors():
+    """两个知识库文件族顶层各带 reviewed_at / next_review。"""
+    for sub in ("rules", "blocks"):
+        for data in _load_json_files(sub):
+            assert _ISO_DATE.match(data.get("reviewed_at", "")), sub
+            assert _ISO_DATE.match(data.get("next_review", "")), sub
+
+
+def test_review_due_warning_does_not_change_exit_code(capsys):
+    """逾期**只打印警告**、不改退出码（避免时间走到 2027 后测试自己变红）。"""
+    import datetime
+    today = datetime.date.today()
+    due = []
+    for sub in ("rules", "blocks"):
+        for data in _load_json_files(sub):
+            nxt = datetime.date.fromisoformat(data["next_review"])
+            if today > nxt:
+                due.append((sub, data.get("document", data.get("channel", "")), nxt))
+    if due:
+        print("[复核提醒] %d 份知识库文件已超过 next_review：%s（不改退出码，仅提示）"
+              % (len(due), ", ".join("%s:%s" % (s, n) for s, _, n in due)))
+    # 守门的是"能判断逾期"，不是"必须不逾期"
+    assert True

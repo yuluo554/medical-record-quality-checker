@@ -15,6 +15,8 @@ venv/
 output/
 reports/
 *.log
+# 二次迭代交接物（含本机绝对路径，不入公共仓）
+update/
 
 # 打包产物
 build/

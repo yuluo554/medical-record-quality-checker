@@ -1,0 +1,30 @@
+# sdist 清单：让解包后的 sdist 自带测试可跑（D4）。
+#
+# 设计（DEC-1=A，用户已确认）：wheel 与 sdist 内容**不同**——
+#   wheel 只带运行必需的包内知识库 src/mrqc/knowledge/data/{blocks,rules}（见
+#     pyproject.toml 的 [tool.setuptools.package-data]）；
+#   sdist 额外带 raw 原文 + 生成数据集 + 基准产物，因为 sdist 的价值是
+#     「clone 下来能自测」：test_block_quotes_are_verbatim_substrings_of_raw 要用
+#     data/knowledge/raw/ 逐字核对引文，test_parsers/test_cli/test_detect_paired
+#     要用 data/samples、data/paired。
+include README.md
+include LICENSE
+include data/README.md
+
+# 包内知识库（blocks/rules 已随包；raw 原文仍留仓内）
+recursive-include src/mrqc/knowledge/data *.json
+
+# 规范原文（5 txt + 1 官方 PDF）与病种模板、生成数据集
+recursive-include data *.json *.txt *.pdf
+
+# 基准：运行器（.py）+ 产物（.md / .docx，README 引用的演示物）
+recursive-include benchmarks *.md *.py *.docx
+
+# 测试与文档留档
+recursive-include tests *.py
+recursive-include plan *.md
+recursive-include docs *.md
+recursive-include tools *.py
+
+# CI 工作流：tests/test_extras_guard.py 会读它做 CI↔extras 对账
+recursive-include .github *

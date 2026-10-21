@@ -2,6 +2,8 @@
 
 > 规则（ai-tool-project-sprint 阶段1）：每份数据登记来源与许可；规范条目挂出处+status；程序化自制带真值数据是核心资产（固定 seed 可复现，可注入已知缺陷做配对评测）。`_private/` 目录不入仓。
 
+> **M3 二次迭代起**：`knowledge/blocks` 与 `knowledge/rules` 已移入包内 `src/mrqc/knowledge/data/`（随 wheel 分发，非 editable 安装同样可用）；本目录保留 `knowledge/raw/` 规范原文（仅供源码态测试核对引文，不进 wheel）。
+
 ## 目录约定
 
 | 目录 | 内容 | 产出方 |
@@ -10,8 +12,8 @@
 | `samples/` | 合成病历部件集合 + truth.json（参数卡形状真值） | 生成器（固定 seed） |
 | `paired/` | 植入缺陷配对评测集 + defects.json | 生成器（注入模式） |
 | `knowledge/raw/` | 5 份卫健委规范原文（txt 为主，含官方 PDF 原件 1 份） | 外部查证获取 |
-| `knowledge/blocks/` | 条文块 json（M3，检索用） | 从 raw 派生 |
-| `knowledge/rules/` | 机器可读规则表 json（M3，schema 见 plan/04 §3） | 从 blocks 派生 |
+| `src/mrqc/knowledge/data/blocks/` | 条文块 json（M3，检索用；**已移入包内**） | 从 raw 派生 |
+| `src/mrqc/knowledge/data/rules/` | 机器可读规则表 json（M3，schema 见 plan/04 §3；**已移入包内**） | 从 blocks 派生 |
 
 ## 登记表
 
@@ -35,7 +37,7 @@
 
 - 每条记录 = 部件 txt（入院记录/病程记录/手术记录[外科]/出院记录/医嘱单/检验检查报告）+ `truth.json`（RecordCard 参数卡形状）+（仅 paired）`defects.json`。
 - `truth.json` 已通过 `py -X utf8 -m mrqc.datagen --verify data/samples data/paired` 对账：RecordCard.from_dict 往返相等、证据 quote 逐字为部件原文子串、时间轴排序、住院天数一致。
-- 位级可复现：同 seed 重跑全部 815 个文件 sha256 零变化（测试 `test_datagen.py` 持续守门）。
+- 位级可复现：同 seed 重跑全部 **815 个生成产物文件** sha256 零变化（815 = samples 400 + paired 415，**不含 2 个 `.gitkeep`**；`find data/samples data/paired -type f` 会数到 817）。测试 `test_datagen.py` 持续守门。
 - CAP（社区获得性肺炎）按内科病历口径**无手术记录部件**，共 5 部件。
 
 ### 三、规范原文（外部查证获取，2026-10-03）

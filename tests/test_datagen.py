@@ -29,11 +29,16 @@ EXPECTED_DEFECT_IDS = (
 
 
 def test_knowledge_dir_points_to_repo_data():
-    """回归锁定：knowledge_dir 指向仓体 data/knowledge（M0 曾误指 src/data）。"""
+    """回归锁定：knowledge_dir 指向**包内**知识库（src/mrqc/knowledge/data）。
+
+    M0 曾误指 src/data；M3 二次迭代后 blocks/rules 移入包内（随 wheel 分发），
+    故断言改为「包内相对」——锁的仍是「知识库位置」这个回归点。
+    """
     from mrqc.knowledge import knowledge_dir
     kd = knowledge_dir()
-    assert kd.name == "knowledge" and kd.parent.name == "data"
-    assert (kd.parent / "templates").is_dir()
+    assert kd.name == "data" and kd.parent.name == "knowledge"
+    assert (kd / "blocks").is_dir() and (kd / "rules").is_dir()
+    assert (REPO_ROOT / "data" / "templates").is_dir()
 
 
 def test_det_rng_deterministic():

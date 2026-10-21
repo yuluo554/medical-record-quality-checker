@@ -30,6 +30,23 @@ def _not_implemented(message: str) -> int:
     return 2
 
 
+def _load_engine_strict(rules_dir):
+    """加载规则库并**拒绝 0 条规则**：返回 engine，或打印错误后返回 None（调用方 rc=2）。
+
+    P0 守门：知识库缺失（未随包分发 / 目录被删）时，工具绝不能退化成
+    「0 条规则参评 → 结论通过 → 退出码 0」的空壳。宁可硬失败也不能假通过。
+    """
+    from .rules import RuleEngine
+
+    engine = RuleEngine.load(rules_dir)
+    if not engine.rules:
+        print("[错误] 规则库为空：%s" % rules_dir, file=sys.stderr)
+        print("[错误] 知识库缺失（未随包分发或目录被删）——不产出「通过」结论，退出码 2",
+              file=sys.stderr)
+        return None
+    return engine
+
+
 def _cmd_demo(args: argparse.Namespace) -> int:
     from .knowledge import knowledge_dir, knowledge_status
     from .llm import llm_available
@@ -106,17 +123,17 @@ def _cmd_check(args: argparse.Namespace) -> int:
     from .knowledge import knowledge_dir
     from .parsers import load_part_texts, parse_texts
     from .pipeline.stages import run_llm_fallback
-    from .rules import RuleEngine
+
+    engine = _load_engine_strict(knowledge_dir() / "rules")
+    if engine is None:
+        return 2
 
     part_texts, warnings = load_part_texts(Path(args.input))
     card = parse_texts(part_texts)
     card.parse_warnings[:0] = warnings  # 目录级告警排前（与 parse_record_dir 同口径）
     run_llm_fallback(card, part_texts)  # M4：低置信字段补抽（未配置自动跳过）
-    engine = RuleEngine.load(knowledge_dir() / "rules")
     findings = engine.check(card, part_texts=part_texts)
     print(json.dumps([f.to_dict() for f in findings], ensure_ascii=False, indent=2))
-    if not engine.rules:
-        print("[提示] 规则库为空（M1/M3 填充 data/knowledge/rules/）", file=sys.stderr)
     non_pass = [f for f in findings if f.status != "pass"]
     print("[结论] 共 %d 条规则参评：%d 条结论非 pass（fail=%d / need_confirm=%d）"
           % (len(engine.rules), len(non_pass),
@@ -133,6 +150,7 @@ def _cmd_run(args: argparse.Namespace) -> int:
     --report 时由导出节点产出 docx（依赖预检：缺 python-docx 直接 exit 2 给安装提示，
     不跑完质控才失败）。
     """
+    from .knowledge import knowledge_dir
     from .pipeline import CTX_CARD, CTX_FINDINGS, CTX_SUMMARY, CTX_TIMINGS
     from .pipeline.stages import build_pipeline
 
@@ -143,6 +161,10 @@ def _cmd_run(args: argparse.Namespace) -> int:
             print("[缺依赖] --report 需要 python-docx：pip install 'mrqc[report]'",
                   file=sys.stderr)
             return 2
+
+    # 预检：规则库为空直接 rc=2（不许出「0 条规则参评 → 通过」的假结论）
+    if _load_engine_strict(knowledge_dir() / "rules") is None:
+        return 2
 
     input_dir = Path(args.input)
     pipe = build_pipeline(input_dir, report_path=args.report)
